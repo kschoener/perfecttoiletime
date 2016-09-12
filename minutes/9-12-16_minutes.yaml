@@ -1,0 +1,16 @@
+date: September 12, 2016
+meeting_type: group # meeting_type can "group", "ta", or "instructor"
+attendance: [kylescho, markabid, swilser, erselig, cwang39]
+absent: []
+excused_absences: []
+task_progress: [ # All group members must be included here even if they haven't made any progress since the last meeting
+  {ubit: kylescho, progress: Start to learn swift and iOS development},
+  {ubit: markabid, progress: Start to learn swift and iOS development},
+  {ubit: swilser, progress: Get Mac OSX set up, Start to learn swift and iOS development},
+  {ubit: erselig, progress: Build blank application, look into swift},
+  {ubit: cwang39, progress: Finish UI design, look into swift and iOS development},
+  ]
+issues: []
+Notes:  | # Anything covered in the meeting that doesn't fit elsewhere.
+  Decided to develop for iOS and use Swift so we can all learn something. Planned what our schedule and tasks are for the
+  Sprint 1. scheduled a time to meet with Lucas (our TA) and also a time to meet next.
