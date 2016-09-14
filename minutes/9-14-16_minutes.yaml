@@ -1,0 +1,17 @@
+date: September 14, 2016
+meeting_type: ta # meeting_type can "group", "ta", or "instructor"
+attendance: [kylescho, markabid, swilser, erselig]
+absent: [cwang39]
+excused_absences: [ # Any legitamite excuses for absent team members
+  {ubit: cwang39, reason: Doctor's appointment regarding surgery.}
+  ]
+task_progress: [ # All group members must be included here even if they haven't made any progress since the last meeting
+  {ubit: kylescho, progress: working on map view},
+  {ubit: markabid, progress: home page look nice-ish plus swipe functionality},
+  {ubit: swilser, progress: try to set up Amazon Web Services -> get credentials from Ted},
+  {ubit: erselig, progress: profile layout for the bathrooms},
+  {ubit: cwang39, progress: work on design and swift}
+  ]
+Notes:  | # Anything covered in the meeting that doesn't fit elsewhere.
+  Finalized what we are going to finish for Sprint 1.
+  xCode isn't as easy as we thought. We have a long road ahead of us.
