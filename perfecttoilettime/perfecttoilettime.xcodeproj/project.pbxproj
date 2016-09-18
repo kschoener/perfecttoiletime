@@ -193,7 +193,6 @@
 				TargetAttributes = {
 					F2D7ED521D8A187F00554EC5 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 8VS4VBC8PY;
 					};
 					F2D7ED661D8A188000554EC5 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -404,6 +403,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = perfecttoilettime/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = TedSelig.perfecttoilettime;
@@ -415,6 +415,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = perfecttoilettime/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = TedSelig.perfecttoilettime;
@@ -487,6 +488,7 @@
 				F2D7ED7D1D8A188000554EC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F2D7ED7E1D8A188000554EC5 /* Build configuration list for PBXNativeTarget "perfecttoilettimeTests" */ = {
 			isa = XCConfigurationList;
@@ -495,6 +497,7 @@
 				F2D7ED801D8A188000554EC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F2D7ED811D8A188000554EC5 /* Build configuration list for PBXNativeTarget "perfecttoilettimeUITests" */ = {
 			isa = XCConfigurationList;
@@ -503,6 +506,7 @@
 				F2D7ED831D8A188000554EC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

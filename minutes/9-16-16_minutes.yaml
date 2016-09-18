@@ -1,4 +1,4 @@
-date: September 16, 2016
+Date: September 16, 2016
 meeting_type: group
 attendance: [swilser, erselig, kylescho, markabid, cwang39]
 absent: []
@@ -6,9 +6,9 @@ excused_absences: []
 task_progress: [
   {ubit: swilser, progress: Applied for an Amazon Web Services Educate account and is learning how to setup a server for the backend of the app. Participated in paired programming for the iOS app front end. Currently learning the Swift programming language.},
   {ubit: erselig, progress: Led the paired programming session for developing the front end of the iOS app and solely added the map portion. Currently learning the Swift programming language.},
-  {ubit: <kylescho>, progress: Co-led the paired programming session for developing the front end of the iOS app. Solely developing the front end of the Android version of the app. Currently learning the Swift programming language.},
-  {ubit: <cwang39>, progress: Continued designing different front end possibilities. Participated in paired programming for the iOS app front end. Currently learning the Swift programming language.},
-  {ubit: <markabid>, progress: Participated in paired programming for the iOS app front end. Currently learning the Swift programming language.}
+  {ubit: kylescho, progress: Co-led the paired programming session for developing the front end of the iOS app. Solely developing the front end of the Android version of the app. Currently learning the Swift programming language.},
+  {ubit: cwang39, progress: Continued designing different front end possibilities. Participated in paired programming for the iOS app front end. Currently learning the Swift programming language.},
+  {ubit: markabid, progress: Participated in paired programming for the iOS app front end. Currently learning the Swift programming language.}
   ]
 issues: [
   {ubit: swilser, issue: Cannot install OS X 10.11 virtually on his PC because processor is too old and doesn't support virtualization for newer OS's},

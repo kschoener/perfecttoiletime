@@ -13,6 +13,8 @@
 		5951B5701D89CDA3002016D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5951B56F1D89CDA3002016D4 /* Assets.xcassets */; };
 		5951B5731D89CDA3002016D4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5951B5711D89CDA3002016D4 /* LaunchScreen.storyboard */; };
 		5951B57E1D89CDA3002016D4 /* Perfect_Toilet_TimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5951B57D1D89CDA3002016D4 /* Perfect_Toilet_TimeTests.swift */; };
+		59D2C0F21D8C8FF6002530E5 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D2C0F11D8C8FF6002530E5 /* File.swift */; };
+		59D2C0F41D8C9028002530E5 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D2C0F31D8C9028002530E5 /* Map.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +38,8 @@
 		5951B5791D89CDA3002016D4 /* Perfect Toilet TimeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Perfect Toilet TimeTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5951B57D1D89CDA3002016D4 /* Perfect_Toilet_TimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Perfect_Toilet_TimeTests.swift; sourceTree = "<group>"; };
 		5951B57F1D89CDA3002016D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		59D2C0F11D8C8FF6002530E5 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = File.swift; path = "Perfect Toilet Time/File.swift"; sourceTree = "<group>"; };
+		59D2C0F31D8C9028002530E5 /* Map.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Map.swift; path = "Perfect Toilet Time/Map.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +63,8 @@
 		5951B55C1D89CDA2002016D4 = {
 			isa = PBXGroup;
 			children = (
+				59D2C0F11D8C8FF6002530E5 /* File.swift */,
+				59D2C0F31D8C9028002530E5 /* Map.swift */,
 				5951B5671D89CDA3002016D4 /* Perfect Toilet Time */,
 				5951B57C1D89CDA3002016D4 /* Perfect Toilet TimeTests */,
 				5951B5661D89CDA3002016D4 /* Products */,
@@ -200,6 +206,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				5951B56B1D89CDA3002016D4 /* ViewController.swift in Sources */,
+				59D2C0F21D8C8FF6002530E5 /* File.swift in Sources */,
+				59D2C0F41D8C9028002530E5 /* Map.swift in Sources */,
 				5951B5691D89CDA3002016D4 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -404,6 +412,7 @@
 				5951B5841D89CDA3002016D4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5951B5851D89CDA3002016D4 /* Build configuration list for PBXNativeTarget "Perfect Toilet TimeTests" */ = {
 			isa = XCConfigurationList;
@@ -412,6 +421,7 @@
 				5951B5871D89CDA3002016D4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
