@@ -1,0 +1,15 @@
+To add a version tag:
+**only do this for sprints or when we make a feature change
+$git tag vX.Y.Z
+$git push origin --tags
+
+
+To merge things from branch y to branch x
+$ git checkout x #switch to branch x
+$ git merge --no-ff --no-commit y #merge branches, but doesn't commit
+**if there are conflicts:
+$ git status #shows status of branch
+#now resolve the conflicts
+**if there are no conflicts (or if all conflicts are resolved):
+$ git commit -m '<commit message>' #commit the merge with a message
+$ git push #push changes to the repository for everyone to see
