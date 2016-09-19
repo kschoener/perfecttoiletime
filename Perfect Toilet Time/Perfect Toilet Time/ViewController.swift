@@ -29,9 +29,9 @@ class ViewController: UIViewController {
             
             switch swipeGesture.direction {
             case UISwipeGestureRecognizerDirection.right:
-                print("Swiped right")
+                self.performSegue(withIdentifier: "map", sender: self)
             case UISwipeGestureRecognizerDirection.left:
-                print("Swiped left")
+                self.performSegue(withIdentifier: "map", sender: self)
             default:
                 break
             }
