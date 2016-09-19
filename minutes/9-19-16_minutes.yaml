@@ -1,0 +1,21 @@
+Date: September 19, 2016
+meeting_type: group
+attendance: [swilser, kylescho, markabid]
+absent: [erselig, cwang39]
+excused_absences: [
+  {ubit: erselig, reason: Slack notifications were malfunctioning.},
+  {ubit: cwang39, reason: Recovering from surgery.}
+  ]
+task_progress: [
+  {ubit: swilser, progress: Was approved for AWS Educate account. Learning how to use Android Studio.},
+  {ubit: erselig, progress: Added map portion to the iOS app. Learning how to use Android Studio},
+  {ubit: kylescho, progress: Led Android Studio and git command basics tutorials for group. Completed and submitted Sprint 1 YouTube video.},
+  {ubit: cwang39, progress: Learning how to use Android Studio.},
+  {ubit: markabid, progress: Learning how to use Android Studio.}
+  ]
+issues: [
+  {ubit: swilser, issue: Having problems completing account setup for AWS. This could be related to the free account and Educate account using the same email address. Will acquire prepaid debit card to finalize account sign-up.}
+  ]
+Notes:  | 
+  We have decided as a group to move the platform for the app from iOS to Android. Will ask Lucas about splitting up the tasks among the group at our next weekly TA meeting. 
+
