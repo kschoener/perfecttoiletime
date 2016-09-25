@@ -1,0 +1,16 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+=======
+.DS_Store
+>>>>>>> e01b87d16f249b6013137486d1c62d1ea954182b
+=======
+.DS_Store
+>>>>>>> e01b87d16f249b6013137486d1c62d1ea954182b
