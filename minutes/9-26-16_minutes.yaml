@@ -1,0 +1,20 @@
+date: September 12, 2016
+meeting_type: group # meeting_type can "group", "ta", or "instructor"
+attendance: [kylescho, markabid, swilser, erselig, cwang39]
+absent: []
+excused_absences: []
+task_progress: [ # All group members must be included here even if they haven't made any progress since the last meeting
+  {ubit: kylescho, progress: None},
+  {ubit: markabid, progress: None},
+  {ubit: swilser, progress: None},
+  {ubit: erselig, progress: set up the database},
+  {ubit: cwang39, progress: None},
+  ]
+issues: []
+Notes:  | # Anything covered in the meeting that doesn't fit elsewhere.
+  Tasks:
+      mark: write code to add a bathroom, add bathroom description to database
+      kyle: opening page (check local storage if username/email is saved) and the map
+      juno: male/female selection page and the user preference page
+      steven: get users location, add settings button and find bathroom button // activity
+      ted: implement user authorization, give mark Firebase access
