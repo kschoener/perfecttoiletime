@@ -1,4 +1,4 @@
-package com.test.test;
+package com.perfecttoilettime.perfecttoilettime;
 
 import org.junit.Test;
 
