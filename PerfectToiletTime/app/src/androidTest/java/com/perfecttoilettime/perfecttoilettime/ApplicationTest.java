@@ -1,4 +1,4 @@
-package com.test.test;
+package com.perfecttoilettime.perfecttoilettime;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
