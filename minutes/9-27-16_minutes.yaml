@@ -1,0 +1,22 @@
+date: September 27, 2016
+meeting_type: instructor  # meeting_type can "group", "ta", or "instructor"
+attendance: [kylescho, markabid, swilser, erselig, cwang39]
+absent: []
+excused_absences: []
+task_progress: [ # All group members must be included here even if they haven't made any progress since the last meeting
+  {ubit: kylescho, progress: Setup apache on the development server. A static site is now live on UB's network},
+  {ubit: markabid, progress: Installed MySQL and setup accounts for the team.},
+  {ubit: swilser, progress: None},
+  {ubit: erselig, progress: Completed AJAX functions for user to upload files to the server.},
+  {ubit: cwang39, progress: None},
+  ]
+issues: []
+Notes:  | # Anything covered in the meeting that doesn't fit elsewhere.
+  For future - add crowd sourcing feature where any user can apply to add a bathroom - if there's 3 or so applications for the same bathroom, approve the
+  addition of the bathroom
+
+  After finishing Android App - make code for android wear app
+
+  add a feature that says if there's a changing table in the bathroom
+
+  For monetizing - have restaurants//businesses market their bathrooms (this would cover server costs)
