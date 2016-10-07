@@ -3,8 +3,11 @@
 *.iml
 .gradle
 /local.properties
+*workspace.xml
+PerfectToiletTime/.idea/workspace.xml
 /.idea/workspace.xml
 /.idea/libraries
+*misc.xml
 .DS_Store
 /build
 /captures
