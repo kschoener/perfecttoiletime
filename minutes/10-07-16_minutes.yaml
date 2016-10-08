@@ -1,0 +1,19 @@
+date: October 7, 2016
+meeting_type: group  # meeting_type can "group", "ta", or "instructor"
+attendance: [kylescho, markabid, swilser, cwang39]
+absent: [erselig]
+excused_absences: [ubit: erselig, reason: had to work]
+task_progress: [
+  {ubit: kylescho, progress: merged all branches on to develop},
+  {ubit: markabid, progress: added bathroom descriiption field to database},
+  {ubit: swilser, progress: added the app descriiption to the README},
+  {ubit: erselig, progress: worked on database},
+  {ubit: cwang39, progress: worked on preference page}
+  ]
+issues: []
+Notes:  | 
+  Kyle & Ted -> finish unifying the backend and front end
+  
+  Juno -> Finsih the preference page & write app description
+
+  Kyle -> Need to create video of the app after everything is completed
