@@ -2,9 +2,9 @@
 .gradle
 *local.properties
 *workspace.xml
-PerfectToiletTime/.idea/workspace.xml
-PerfectToiletTime/.idea
-PerfectToiletTime/.idea/*
+/PerfectToiletTime/.idea/workspace.xml
+/PerfectToiletTime/.idea
+/PerfectToiletTime/.idea/*
 .idea/workspace.xml
 .idea/libraries
 *misc.xml
