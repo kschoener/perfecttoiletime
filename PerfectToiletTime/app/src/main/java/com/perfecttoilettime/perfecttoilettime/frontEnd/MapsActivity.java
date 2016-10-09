@@ -23,6 +23,7 @@ import com.perfecttoilettime.perfecttoilettime.R;
 import java.util.ArrayList;
 import java.util.Random;
 
+//created by Kyle
 public class MapsActivity extends FragmentActivity implements
         OnCameraMoveStartedListener,
         OnCameraMoveListener,

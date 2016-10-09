@@ -1,3 +1,4 @@
+<!--created by Kyle-->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -17,15 +18,15 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_setting_light"
+        app:srcCompat="@drawable/preferences"
         android:id="@+id/mapsSettingButton"
-        android:layout_gravity="bottom|right" />
+        android:layout_gravity="top|right" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/mapsFindBathroom"
-        android:layout_gravity="top|center"
+        android:layout_gravity="bottom|center"
         android:fontFamily="monospace"
         android:text="Find Bathroom"
         android:textSize="@dimen/infoFontSize"
