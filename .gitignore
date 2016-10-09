@@ -1,20 +1,13 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 *.iml
 .gradle
-/local.properties
+local.properties
 *workspace.xml
 PerfectToiletTime/.idea/workspace.xml
 PerfectToiletTime/.idea
+PerfectToiletTime/.idea/
 /.idea/workspace.xml
 /.idea/libraries
 *misc.xml
+PerfectToiletTime/build
+PerfectToiletTime/captures
 .DS_Store
-/build
-/captures
-=======
-.DS_Store
->>>>>>> e01b87d16f249b6013137486d1c62d1ea954182b
-=======
-.DS_Store
->>>>>>> e01b87d16f249b6013137486d1c62d1ea954182b
