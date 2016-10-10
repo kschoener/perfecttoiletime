@@ -32,3 +32,6 @@ HOW TO TEST OR MODIFIY THE APP WITH ANDROID STUDIO:
     - Click "Run" in the toolbar, then click "Run 'app'".
     - Click your connected device (supported Android device) or Android emulated device you have set up, then click "OK".
     - Proceed to use and test the app's functionality.
+
+
+The goal for this app is firstly to bring a better experience for the everyday must-have "restroom" time. With preference settings and location choosing, people can have a more peaceful time and make it easier when they are not at their home. Now we are mainly focusing on building this app for students and faculty at UB. We noticed the usage for all the restrooms are unbalanced which means some of them are crowded but some are rarely used by people. This app can balance usage of the restroom, and also achieve the goal of making toilet time better, hence our name, PerfectToiletTime.
