@@ -48,7 +48,7 @@ public class LoadingScreen extends AppCompatActivity {
 
     private void checkDb(){
         //returningUser is true if androidID is in the database
-        boolean returningUser = true;
+        boolean returningUser = false;
         //now check the database for androidID
 
         Intent startNextScreen;
@@ -60,8 +60,8 @@ public class LoadingScreen extends AppCompatActivity {
             startActivity(startNextScreen);
         }else {
             progressStatus = 100;
-//            startNextScreen = new Intent(this, GenderSelection.class);
-//            startActivity(startNextScreen);
+            startNextScreen = new Intent(this, genderActivity.class);
+            startActivity(startNextScreen);
         }
     }
 

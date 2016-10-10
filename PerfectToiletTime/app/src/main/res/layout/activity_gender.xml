@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_gender"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,28 +9,62 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.steven.perfecttoilettime.genderActivity">
+    tools:context="com.perfecttoilettime.perfecttoilettime.frontEnd.genderActivity"
+    android:background="@color/neutralBackgroundColor">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="MALE"
-        android:id="@+id/textView"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
+    <ImageButton
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/imageButton"
+        android:layout_alignTop="@+id/imageButton2"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="75dp"
-        android:layout_marginStart="75dp" />
+        app:srcCompat="@drawable/maleimage" />
+
+    <ImageButton
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/imageButton2"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        app:srcCompat="@drawable/femaleimage" />
 
     <TextView
+        android:text="Male"
+        android:textSize="24dp"
+        android:textColor="#253275"
+        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="FEMALE"
+        android:layout_marginTop="43dp"
         android:id="@+id/textView"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
+        android:layout_marginEnd="47dp"
+        android:layout_below="@+id/imageButton"
+        android:layout_alignEnd="@+id/imageButton" />
+
+    <TextView
+        android:text="Famle"
+        android:textSize="24dp"
+        android:textColor="#253275"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        android:layout_alignBaseline="@+id/textView"
+        android:layout_alignBottom="@+id/textView"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="59dp"
-        android:layout_marginEnd="59dp" />
+        android:layout_marginEnd="37dp" />
+
+    <TextView
+        android:text="Click picture to Select Gender"
+        android:textSize="23dp"
+        android:textColor="#253275"
+        android:textStyle="bold"
+        android:layout_width="500dp"
+        android:layout_height="30dp"
+        android:id="@+id/textView3"
+        android:layout_marginBottom="62dp"
+        android:layout_above="@+id/imageButton"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="19dp" />
 
 </RelativeLayout>

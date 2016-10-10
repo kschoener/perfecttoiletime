@@ -16,11 +16,20 @@
         tools:context="com.perfecttoilettime.perfecttoilettime.frontEnd.MapsActivity" />
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         app:srcCompat="@drawable/preferences"
         android:id="@+id/mapsSettingButton"
-        android:layout_gravity="top|right" />
+        android:layout_gravity="top|left"
+        android:background="@color/neutralBackgroundColor"/>
+
+    <Button
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:id="@+id/jumpToMeButton"
+        android:text="ME"
+        android:layout_gravity="top|right"
+        android:background="@color/neutralBackgroundColor"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -30,7 +39,8 @@
         android:fontFamily="monospace"
         android:text="Find Bathroom"
         android:textSize="@dimen/infoFontSize"
-        android:textColor="@color/fontColor" />
+        android:textColor="@color/fontColor"
+        android:background="@color/neutralBackgroundColor"/>
 
 
 </FrameLayout>

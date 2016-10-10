@@ -6,4 +6,5 @@
     <string name="specifyLauncher">Find the Closest or Best Bathroom</string>
     <string name="bestLauncher">Best</string>
     <string name="closestLauncher">Closest</string>
+    <string name="title_activity_testmapsactivity">Map</string>
 </resources>
