@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "877870859866",
+    "firebase_url": "https://perfecttoilettime.firebaseio.com",
+    "project_id": "perfecttoilettime",
+    "storage_bucket": "perfecttoilettime.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:877870859866:android:3c8d52ed1f39c4f8",
+        "android_client_info": {
+          "package_name": "com.test.test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "877870859866-jd07scn13u68fnbm98r0fdsc5l8dfro9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC83Rn_qjVbFwoz-R7teMU6ZH_PJPi3JOY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:877870859866:android:1feb85b1a30e5ae1",
+        "android_client_info": {
+          "package_name": "com.perfecttoilettime.perfecttoilettime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "877870859866-jd07scn13u68fnbm98r0fdsc5l8dfro9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC83Rn_qjVbFwoz-R7teMU6ZH_PJPi3JOY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

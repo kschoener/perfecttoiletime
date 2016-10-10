@@ -1,0 +1,32 @@
+date: October 5, 2016
+meeting_type: ta  # meeting_type can "group", "ta", or "instructor"
+attendance: [kylescho, markabid, swilser, erselig, cwang39]
+absent: []
+excused_absences: []
+task_progress: [ # All group members must be included here even if they haven't made any progress since the last meeting
+  {ubit: kylescho, progress: Finsihed Loading page, finished map features},
+  {ubit: markabid, progress: finished add bathroom functionality},
+  {ubit: swilser, progress: finished bathroom search page},
+  {ubit: erselig, progress: finihsed preference data},
+  {ubit: cwang39, progress: finished preference page},
+  ]
+issues: []
+Notes:  | 
+  Kyle & Ted & Steve -> finish unifying the backend and front end
+  Juno & Mark -> Finsih the preference page backend implementation
+
+
+  Kyle -> Need to create video of the app
+  Steven -> Need to add instructions for downloading and using the app in the README
+  Juno -> Say what the app is // what they can do on the app in the README
+
+
+  Goals for Sprint 3:
+    Map pinch to zoom
+    Finalize bathroom addition
+    Prepopulate more data of bathrooms
+    Allow user to input preferences and change them - settings page?
+    Load the user data from the web
+    Find closest // best bathroom functionality?
+    Make a bathroom info page
+    Post and see reviews

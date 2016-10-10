@@ -1,0 +1,18 @@
+Date: September 21, 2016
+meeting_type: ta
+attendance: [kylescho, markabid, erselig, swilser]
+absent: [cwang39]
+excused_absences: [
+  {ubit: cwang39, reason: Recovering from surgery.}
+  ]
+task_progress: [
+  {ubit: markabid, progress: Taking on the task of back end development for the app but may switch to UI development if more help is needed there. Still learning how to use Android Studio.},
+  {ubit: erselig, progress: Taking on the task of setting up the server and back end development.},
+  {ubit: kylescho, progress: Taking on the task of developing the UI of the app and will switch to back end development as needed. Looking into the Ionic mobile app framework.},
+  {ubit: cwang39, progress: Learning how to use Android Studio.},
+  {ubit: swilser, progress: Taking on the task of developing the UI of the app. Still learning how to use Android Studio and looking into the Ionic mobile app framework.}
+  ]
+issues: [
+  ]
+Notes:  | 
+  The group is considering using the Ionic mobile app framework instead of Android Studio for developing the app. More research is going to be done on Ionic before we decide to make the switch. We are not going to be using AWS for our server and are thinking about Firebase as an alternative. 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="maleBackgroundColor">#1cbee7</color>
+    <color name="femaleBackgroundColor">#f97de6</color>
+    <color name="neutralBackgroundColor">#7c5bff</color>
+    <color name="fontColor">#e4e4e4</color>
+</resources>
