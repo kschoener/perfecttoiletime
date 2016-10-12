@@ -1,0 +1,30 @@
+date: October 12, 2016
+meeting_type: ta  # meeting_type can "group", "ta", or "instructor"
+attendance: [kylescho, markabid, swilser, cwang39, erselig]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: kylescho, progress: None},
+  {ubit: markabid, progress: None},
+  {ubit: swilser, progress: None},
+  {ubit: erselig, progress: None},
+  {ubit: cwang39, progress: None}
+  ]
+issues: []
+Notes:  | 
+
+  Juno -> bathroom info page, add bathroom page --> press and hold on the map and get that location for adding a bathroom 
+  Steven -> algorithms // button for bathroom search, add a menu (add bathroom, change preference, change gender) 
+  Ted -> load user data, bathroom data, bathroom info data 
+  Mark -> email service and report button in bathroom info page 
+  Kyle -> Pinch to zoom, bathroom quick info on Map, Google Map cluster marker 
+
+  Goals for Sprint 3:
+    Map pinch to zoom
+    Finalize bathroom addition
+    Prepopulate more data of bathrooms
+    Load the user data from the database
+    Find closest // best bathroom functionality?
+    Make a bathroom info page
+    Post and see reviews
+    contact maintenance through email
