@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
 import android.location.LocationListener;
+//import android.location.Location;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -18,6 +20,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
 import com.google.android.gms.maps.GoogleMap.*;
@@ -33,7 +39,7 @@ public class MapsActivity extends FragmentActivity implements
         OnCameraMoveListener,
         OnCameraMoveCanceledListener,
         OnCameraIdleListener,
-        OnMapReadyCallback{
+        OnMapReadyCallback {
     private GoogleMap mMap;
     private LatLng mLocation;
     private LocationManager mLocationManager;
@@ -51,12 +57,17 @@ public class MapsActivity extends FragmentActivity implements
     private ArrayList<Marker> bathrooms;
 
     private int[] prefValues;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent startIntent = getIntent();
-        if(startIntent.getExtras().containsKey(preferencesActivity.extraKey)){
+        if (startIntent.getExtras().containsKey(preferencesActivity.extraKey)) {
             prefValues = startIntent.getExtras().getIntArray(preferencesActivity.extraKey);
         }
 
@@ -77,17 +88,19 @@ public class MapsActivity extends FragmentActivity implements
 //                fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
             }
         });
+        /*
         prefLauncher = (ImageButton) findViewById(R.id.mapsSettingButton);
         prefLauncher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(v.getContext(), preferencesActivity.class);
-                if(prefValues != null){
+                if (prefValues != null) {
                     i.putExtra(preferencesActivity.extraKey, prefValues);
                 }
                 startActivity(i);
             }
         });
+        */
         findBathroom = (Button) findViewById(R.id.mapsFindBathroom);
         findBathroom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +114,9 @@ public class MapsActivity extends FragmentActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -124,11 +140,11 @@ public class MapsActivity extends FragmentActivity implements
         String locationProvider = LocationManager.GPS_PROVIDER;
         Location lastKnownLocation = mLocationManager.getLastKnownLocation(locationProvider);
         String firstMarker;
-        if(lastKnownLocation == null){
+        if (lastKnownLocation == null) {
             mLocation = new LatLng(43.002341, -78.788195);
             firstMarker = "Davis Hall";
-        }else{
-            mLocation= new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        } else {
+            mLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
             firstMarker = "My Location";
         }
         mMap.addMarker(new MarkerOptions().position(mLocation).title(firstMarker));
@@ -143,7 +159,7 @@ public class MapsActivity extends FragmentActivity implements
 
     }
 
-    private void fetchData(LatLngBounds bounds){
+    private void fetchData(LatLngBounds bounds) {
         //remove markers no longer in the camera's view
         updateMarkers(bounds);
         //or this to clear all markers
@@ -155,12 +171,12 @@ public class MapsActivity extends FragmentActivity implements
         double lowLat = bounds.southwest.latitude;
         double lowLon = bounds.southwest.longitude;
         Random rand = new Random();
-        for(int i = 0; i < 30; i++){
+        for (int i = 0; i < 30; i++) {
             double tempLat = lowLat + (highLat - lowLat) * rand.nextDouble();
             double tempLon = lowLon + (highLon - lowLon) * rand.nextDouble();
             bathrooms.add(mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(tempLat, tempLon))
-                    .title(""+i)));
+                    .title("" + i)));
 
         }
 
@@ -174,58 +190,60 @@ public class MapsActivity extends FragmentActivity implements
 //        }
     }
 
-    private void updateMarkers(LatLngBounds bounds){
-        for(int i = 0; i < bathrooms.size(); i++) {
+    private void updateMarkers(LatLngBounds bounds) {
+        for (int i = 0; i < bathrooms.size(); i++) {
             //if marker not in bounds, remove it from the map and bathroom list
             if (!bounds.contains(bathrooms.get(i).getPosition())) {
                 bathrooms.remove(i).remove();
             }
         }
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
+    public void menuLauncher(View view) {
+        Intent intent = new Intent(this, menuActivity.class);
+        startActivity(intent);
+    }
 
+    // Not finished
+    public void findClosest(View view) {
+        Intent intent = new Intent(this, MapsActivity.class);
+        mMap.clear();
+        //OR
+        //clearMarkers();
+        //bathrooms.add();
+        //d = sqrt((x2-x1)^2)+(y2-y1)^2)
+        // figure out how to iterate through all bathrooms in database and get latlng of each
+        Location currentLocation = new Location("");
+        //String locationProvider = LocationManager.GPS_PROVIDER;
+        //Location lastKnownLocation = mLocationManager.getLastKnownLocation(locationProvider);
+        //mLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        LatLng latLngOfCurrentLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        LatLng closest = new LatLng(42, 42);//.title("") // put in coordinates from closest
+        //currentLocation.distanceTo(currentLocation);
+        //currentLocation.distanceBetween(startLat, startLong, endLat, endLong);
+        mMap.addMarker(new MarkerOptions().position(closest));
+        startActivity(intent);
+    }
 
+    public void findBest(View view) {
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
+    }
 
+    public void specifyBathroom(View view) {
+        Intent intent = new Intent(this, specifyActivity.class);
+        startActivity(intent);
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //clears arrayList of bathroom markers
+    private void clearMarkers() {
+        //for(int i = 0; i < bathrooms.size(); i++) {
+        //    bathrooms.remove(i);
+        //}
+        bathrooms.clear();
+    }
+    //--------------------------------------------------------------------------------------------------------------------------------------
 
 
     private final LocationListener userLocationListener = new LocationListener() {
@@ -234,7 +252,7 @@ public class MapsActivity extends FragmentActivity implements
             mLocation = new LatLng(location.getLatitude(), location.getLongitude());
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(mLocation).title("MY LOCATION"));
-            if(!madeBathrooms){
+            if (!madeBathrooms) {
                 fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
 //                madeBathrooms = true;
             }
@@ -242,12 +260,15 @@ public class MapsActivity extends FragmentActivity implements
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, zoomlevel));
         }
 
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
-        public void onProviderEnabled(String provider) {}
-        public void onProviderDisabled(String provider) {}
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onProviderDisabled(String provider) {
+        }
     };
-
-
 
 
     @Override
@@ -292,8 +313,6 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-
-
     @Override
     public void onRequestPermissionsResult
             (int requestCode, String permissions[], int[] grantResults) {
@@ -321,4 +340,41 @@ public class MapsActivity extends FragmentActivity implements
             // permissions this app might request
         }
     }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Maps Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
 }
+
