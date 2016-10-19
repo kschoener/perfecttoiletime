@@ -24,6 +24,15 @@ import com.google.android.gms.maps.GoogleMap.*;
 
 import com.perfecttoilettime.perfecttoilettime.R;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -155,23 +164,55 @@ public class MapsActivity extends FragmentActivity implements
         double lowLat = bounds.southwest.latitude;
         double lowLon = bounds.southwest.longitude;
         Random rand = new Random();
-        for(int i = 0; i < 30; i++){
+        /*for(int i = 0; i < 30; i++){
             double tempLat = lowLat + (highLat - lowLat) * rand.nextDouble();
             double tempLon = lowLon + (highLon - lowLon) * rand.nextDouble();
             bathrooms.add(mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(tempLat, tempLon))
                     .title(""+i)));
 
-        }
+        }*/
+        String urlString ="http://socialgainz.com/Bumpr/PerfectToiletTime/getLocation.php";
+        final String urlString1 = urlString.replaceAll(" ", "%20");
+        new Thread(new Runnable() {
+            public void run() {
+                try{
+                    //get bathrooms
+                    URL url = new URL(urlString1);
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    String resp = readStream(in);
+                    //Log.d("myTag", "Response:" + resp);
+                    JSONArray array = new JSONArray(resp);
+                    for(int i = 0; i< array.length(); i++){
+                        JSONObject obj = array.getJSONObject(i);
+                        final String name = obj.getString("name");
+                        final double latitude = Double.parseDouble(obj.getString("Latitude"));
+                        final double longitude = Double.parseDouble(obj.getString("Longitude"));
+                        MapsActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //add bathroom mark (runs on main thread)
+                                bathrooms.add(mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude)).title(name)));
+                                //hMap.put(mMap.addMarker(new MarkerOptions().position(location).title(first)),ID);
+                            }
+                        });
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
 
+            }
+        }).start();
 //        //todo query the database
 //        ArrayList<Pair<LatLng, String>> locationsFromDb = new ArrayList<>();
 //        //todo look into cluster manager
-//        for(int i = 0; i < locationsFromDb.size(); i++) {
-//            LatLng pos = locationsFromDb.get(i).first;
-//            String bathroomName = locationsFromDb.get(i).second;
-//            bathrooms.add(mMap.addMarker(new MarkerOptions().position(pos).title(bathroomName)));
-//        }
+        /*for(int i = 0; i < locationsFromDb.size(); i++) {
+            LatLng pos = locationsFromDb.get(i).first;
+            String bathroomName = locationsFromDb.get(i).second;
+            Log.d("myTag", "Response2:" + bathroomName);
+            bathrooms.add(mMap.addMarker(new MarkerOptions().position(pos).title(bathroomName)));
+        }*/
     }
 
     private void updateMarkers(LatLngBounds bounds){
@@ -319,6 +360,20 @@ public class MapsActivity extends FragmentActivity implements
 
             // other 'case' lines to check for other
             // permissions this app might request
+        }
+    }
+    //parse stream
+    private String readStream(InputStream is) {
+        try {
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            int i = is.read();
+            while(i != -1) {
+                bo.write(i);
+                i = is.read();
+            }
+            return bo.toString();
+        } catch (IOException e) {
+            return "";
         }
     }
 }
