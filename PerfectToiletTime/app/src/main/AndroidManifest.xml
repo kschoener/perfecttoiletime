@@ -37,15 +37,15 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".frontEnd.genderActivity"/>
-        <activity android:name=".frontEnd.preferencesActivity"/>
-
+        <activity android:name=".frontEnd.genderActivity" />
+        <activity android:name=".frontEnd.preferencesActivity" />
         <activity
             android:name=".frontEnd.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".testmapsactivity"
-            android:label="@string/title_activity_testmapsactivity"/>
+            android:label="@string/title_activity_testmapsactivity" />
+        <activity android:name=".MailSenderActivity"></activity>
     </application>
 
 </manifest>
