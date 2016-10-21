@@ -9,6 +9,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.perfecttoilettime.perfecttoilettime.MailSenderActivity;
 import com.perfecttoilettime.perfecttoilettime.R;
 
 import java.util.ArrayList;
@@ -58,6 +59,14 @@ public class preferencesActivity extends AppCompatActivity {
             valueKeepers.add(tempText);
             prefNames.add((TextView)findViewById(prefResID));
         }
+
+        Button emailButton = (Button) findViewById(R.id.emailButton);
+        emailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(preferencesActivity.this, MailSenderActivity.class));
+            }
+        });
 
         Button saveButton = (Button) findViewById(R.id.prefSaveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
