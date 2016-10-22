@@ -62,8 +62,9 @@ public class GMailSender extends javax.mail.Authenticator{
             else
                 message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
             Transport.send(message);
+            System.out.println("Message Sent Successfully!");
         }catch(Exception e){
-
+            System.out.println("Message Not Sent Successfully!");
         }
     }
 
