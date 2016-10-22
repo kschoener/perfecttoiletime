@@ -18,8 +18,8 @@ public class MailSenderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
-                    GMailSender sender = new GMailSender("username@gmail.com","password");
-                    sender.sendMail("This is subject", "This is body", "user@gmail.com", "user@gmail.com");
+                    GMailSender sender = new GMailSender("perfecttoilettimeapp@gmail.com","Toiletries*");
+                    sender.sendMail("This is subject", "This is body", "perfecttoilettime@gmail.com", "mark.yankees@gmail.com");
                 } catch (Exception e){
                     Log.e("SendMail", e.getMessage(), e);
                 }
