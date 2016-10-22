@@ -17,17 +17,17 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="146dp"
-        android:id="@+id/spinner3"
+        android:id="@+id/buildingSpinner"
         android:entries="@array/buildingNames"
         />
 
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner3"
+        android:layout_below="@+id/buildingSpinner"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="49dp"
-        android:id="@+id/spinner4"
+        android:id="@+id/floorSpinner"
         android:entries="@array/buildingFloor"
         />
 
@@ -47,14 +47,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
         android:id="@+id/textView6"
-        android:layout_above="@+id/spinner4"
+        android:layout_above="@+id/floorSpinner"
         android:layout_alignParentStart="true" />
 
     <Button
         android:text="Send email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner4"
+        android:layout_below="@+id/floorSpinner"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="112dp"
         android:layout_marginTop="88dp"
@@ -63,10 +63,10 @@
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner4"
+        android:layout_below="@+id/floorSpinner"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
-        android:id="@+id/spinner5"
+        android:id="@+id/problemSpinner"
         android:entries="@array/problems"
         />
 
@@ -75,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView7"
-        android:layout_below="@+id/spinner3"
+        android:layout_below="@+id/buildingSpinner"
         android:layout_alignParentStart="true"
         android:layout_marginTop="28dp" />
 
