@@ -18,21 +18,20 @@ public class MailSenderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail_sender);
 
-        Spinner buildingSpinner = (Spinner) findViewById(R.id.buildingSpinner);
-        final String building = buildingSpinner.getSelectedItem().toString();
-
-        Spinner floorSpinner = (Spinner) findViewById(R.id.floorSpinner);
-        final String floor = floorSpinner.getSelectedItem().toString();
-
-        Spinner problemSpinner = (Spinner) findViewById(R.id.problemSpinner);
-        final String problem = problemSpinner.getSelectedItem().toString();
-
         Button sendMailBtn = (Button) findViewById(R.id.sendButton);
         sendMailBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final GMailSender sender = new GMailSender("perfecttoilettimeapp@gmail.com","Toiletries*", MailSenderActivity.this);
                 new AsyncTask<Void, Void, Void>(){
+                    Spinner buildingSpinner = (Spinner) findViewById(R.id.buildingSpinner);
+                    String building = buildingSpinner.getSelectedItem().toString();
+
+                    Spinner floorSpinner = (Spinner) findViewById(R.id.floorSpinner);
+                    String floor = floorSpinner.getSelectedItem().toString();
+
+                    Spinner problemSpinner = (Spinner) findViewById(R.id.problemSpinner);
+                    String problem = problemSpinner.getSelectedItem().toString();
                     private ProgressDialog progressDialog;
                     private Context context = sender.getContext();
                     @Override protected void onPreExecute(){
