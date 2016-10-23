@@ -3,6 +3,8 @@ package com.perfecttoilettime.perfecttoilettime;
 /**
  * Created by Mark on 10/21/16.
  */
+import android.content.Context;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.Message;
@@ -27,8 +29,9 @@ public class GMailSender extends javax.mail.Authenticator{
     static{
         Security.addProvider(new com.perfecttoilettime.perfecttoilettime.JSSEProvider());
     }
-
-    public GMailSender(String username, String password){
+    Context context;
+    public GMailSender(String username, String password, Context c){
+        context = c;
         this.username = username;
         this.password = password;
 
@@ -44,6 +47,10 @@ public class GMailSender extends javax.mail.Authenticator{
         props.setProperty("mail.smtp.quitwait", "false");
 
         session = Session.getDefaultInstance(props, this);
+    }
+
+    public Context getContext(){
+        return context;
     }
 
     protected PasswordAuthentication getPasswordAuthentication(){
@@ -62,6 +69,7 @@ public class GMailSender extends javax.mail.Authenticator{
             else
                 message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
             Transport.send(message);
+
             System.out.println("Message Sent Successfully!");
         }catch(Exception e){
             System.out.println("Message Not Sent Successfully!");
