@@ -52,8 +52,6 @@ public class MailSenderActivity extends AppCompatActivity {
                     return null;
                     }
                 }.execute();
-
-
             }
         });
     }
