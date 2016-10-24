@@ -18,18 +18,26 @@
     <ImageButton
         android:layout_width="56dp"
         android:layout_height="56dp"
-        app:srcCompat="@drawable/preferences"
+        android:src="@android:drawable/ic_menu_edit"
         android:id="@+id/mapsSettingButton"
         android:layout_gravity="top|left"
         android:background="@color/neutralBackgroundColor"/>
 
-    <Button
+    <ImageButton
         android:layout_width="56dp"
         android:layout_height="56dp"
+        android:src="@android:drawable/ic_menu_mylocation"
         android:id="@+id/jumpToMeButton"
-        android:text="ME"
         android:layout_gravity="top|right"
         android:background="@color/neutralBackgroundColor"/>
+
+    <!--<Button-->
+        <!--android:layout_width="56dp"-->
+        <!--android:layout_height="56dp"-->
+        <!--android:id="@+id/jumpToMeButton"-->
+        <!--android:text="ME"-->
+        <!--android:layout_gravity="top|right"-->
+        <!--android:background="@color/neutralBackgroundColor"/>-->
 
     <Button
         android:layout_width="wrap_content"

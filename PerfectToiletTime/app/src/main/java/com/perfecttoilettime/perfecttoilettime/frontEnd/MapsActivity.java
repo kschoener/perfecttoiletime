@@ -12,11 +12,11 @@ import android.support.v4.content.ContextCompat;
 
 import android.location.LocationListener;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
@@ -25,6 +25,7 @@ import com.google.android.gms.maps.GoogleMap.*;
 import com.perfecttoilettime.perfecttoilettime.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 //created by Kyle
@@ -33,7 +34,9 @@ public class MapsActivity extends FragmentActivity implements
         OnCameraMoveListener,
         OnCameraMoveCanceledListener,
         OnCameraIdleListener,
-        OnMapReadyCallback{
+        OnInfoWindowClickListener,
+        OnInfoWindowLongClickListener,
+        OnMapReadyCallback, OnInfoWindowCloseListener {
     private GoogleMap mMap;
     private LatLng mLocation;
     private LocationManager mLocationManager;
@@ -45,22 +48,48 @@ public class MapsActivity extends FragmentActivity implements
     //todo delete : for demo
     private boolean madeBathrooms = false;
 
-    private Button jumpToMe;
+    private ImageButton jumpToMe;
     private ImageButton prefLauncher;
     private Button findBathroom;
-    private ArrayList<Marker> bathrooms;
+    private ArrayList<Marker> testingBathrooms;
+    private HashMap<Integer, Marker> dbBathrooms;
 
     private int[] prefValues;
+    private int gender = genderActivity.maleValue;
+
+    private BitmapDescriptor genderColor;
+
+    private final LocationListener userLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            mLocation = new LatLng(location.getLatitude(), location.getLongitude());
+            mMap.clear();
+            mMap.addMarker(new MarkerOptions().position(mLocation).title("MY LOCATION"));
+            if(!madeBathrooms){
+                fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+//                madeBathrooms = true;
+            }
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, zoomlevel));
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+        public void onProviderEnabled(String provider) {}
+        public void onProviderDisabled(String provider) {}
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MapsInitializer.initialize(getApplicationContext());
+        genderColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
         Intent startIntent = getIntent();
-        if(startIntent.getExtras().containsKey(preferencesActivity.extraKey)){
-            prefValues = startIntent.getExtras().getIntArray(preferencesActivity.extraKey);
+
+        if(startIntent.getExtras().containsKey(preferencesActivity.preferenceExtraKey)){
+            prefValues = startIntent.getExtras().getIntArray(preferencesActivity.preferenceExtraKey);
         }
 
-        bathrooms = new ArrayList<Marker>();
+        testingBathrooms = new ArrayList<Marker>();
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -69,7 +98,9 @@ public class MapsActivity extends FragmentActivity implements
                     LOCATION_REQUEST_CODE);
         }
         setContentView(R.layout.activity_maps);
-        jumpToMe = (Button) findViewById(R.id.jumpToMeButton);
+
+
+        jumpToMe = (ImageButton) findViewById(R.id.jumpToMeButton);
         jumpToMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,17 +108,22 @@ public class MapsActivity extends FragmentActivity implements
 //                fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
             }
         });
+
+
         prefLauncher = (ImageButton) findViewById(R.id.mapsSettingButton);
         prefLauncher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(v.getContext(), preferencesActivity.class);
                 if(prefValues != null){
-                    i.putExtra(preferencesActivity.extraKey, prefValues);
+                    i.putExtra(genderActivity.genderExtraKey, gender);
+                    i.putExtra(preferencesActivity.preferenceExtraKey, prefValues);
                 }
                 startActivity(i);
             }
         });
+
+
         findBathroom = (Button) findViewById(R.id.mapsFindBathroom);
         findBathroom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +133,26 @@ public class MapsActivity extends FragmentActivity implements
                 fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
             }
         });
+
+        if(startIntent.getExtras().containsKey(genderActivity.genderExtraKey)){
+            gender = startIntent.getExtras().getInt(genderActivity.genderExtraKey);
+            switch (gender){
+                case genderActivity.maleValue:
+                    genderColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+                    jumpToMe.setBackgroundColor(getResources().getColor(R.color.maleBackgroundColor));
+                    prefLauncher.setBackgroundColor(getResources().getColor(R.color.maleBackgroundColor));
+                    findBathroom.setBackgroundColor(getResources().getColor(R.color.maleBackgroundColor));
+                    break;
+                case genderActivity.femaleValue:
+                    genderColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE);
+                    jumpToMe.setBackgroundColor(getResources().getColor(R.color.femaleBackgroundColor));
+                    prefLauncher.setBackgroundColor(getResources().getColor(R.color.femaleBackgroundColor));
+                    findBathroom.setBackgroundColor(getResources().getColor(R.color.femaleBackgroundColor));
+                    break;
+            }
+        }
+
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -109,16 +165,27 @@ public class MapsActivity extends FragmentActivity implements
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
 //            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMapToolbarEnabled(false);
             mMap.getUiSettings().setZoomGesturesEnabled(true);
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
                 LOCATION_REFRESH_DISTANCE, userLocationListener);
-        //will load bathrooms based on camera bounds
-        //todo smooth these out
+
+        //set InfoWindow
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+
+        //set info window click listener
+        mMap.setOnInfoWindowClickListener(this);
+        mMap.setOnInfoWindowLongClickListener(this);
+        mMap.setOnInfoWindowCloseListener(this);
+
+
+        //will load testingBathrooms based on camera bounds
         mMap.setOnCameraIdleListener(this);
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnCameraMoveListener(this);
         mMap.setOnCameraMoveCanceledListener(this);
+
 
 
 //        String locationProvider = LocationManager.NETWORK_PROVIDER;
@@ -137,10 +204,6 @@ public class MapsActivity extends FragmentActivity implements
         fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
         // Add a marker in Sydney and move the camera
 //        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-//        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
 
     }
 
@@ -159,9 +222,14 @@ public class MapsActivity extends FragmentActivity implements
         for(int i = 0; i < 30; i++){
             double tempLat = lowLat + (highLat - lowLat) * rand.nextDouble();
             double tempLon = lowLon + (highLon - lowLon) * rand.nextDouble();
-            bathrooms.add(mMap.addMarker(new MarkerOptions()
+            testingBathrooms.add(mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(tempLat, tempLon))
-                    .title(""+i)));
+                    .icon(genderColor)
+                    .title(""+i)
+                    .snippet("This is the "+i+"th bathroom to be added!"))
+            );
+            //TODO: set title to bathroom name
+            // TODO: set snippet with floor number and average rating
 
         }
 
@@ -171,130 +239,38 @@ public class MapsActivity extends FragmentActivity implements
 //        for(int i = 0; i < locationsFromDb.size(); i++) {
 //            LatLng pos = locationsFromDb.get(i).first;
 //            String bathroomName = locationsFromDb.get(i).second;
-//            bathrooms.add(mMap.addMarker(new MarkerOptions().position(pos).title(bathroomName)));
+//            testingBathrooms.add(mMap.addMarker(new MarkerOptions().position(pos).title(bathroomName)));
 //        }
     }
 
     private void updateMarkers(LatLngBounds bounds){
-        for(int i = 0; i < bathrooms.size(); i++) {
+        for(int i = 0; i < testingBathrooms.size(); i++) {
             //if marker not in bounds, remove it from the map and bathroom list
-            if (!bounds.contains(bathrooms.get(i).getPosition())) {
-                bathrooms.remove(i).remove();
+            if (!bounds.contains(testingBathrooms.get(i).getPosition())) {
+                testingBathrooms.remove(i).remove();
             }
         }
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private final LocationListener userLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            mLocation = new LatLng(location.getLatitude(), location.getLongitude());
-            mMap.clear();
-            mMap.addMarker(new MarkerOptions().position(mLocation).title("MY LOCATION"));
-            if(!madeBathrooms){
-                fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
-//                madeBathrooms = true;
-            }
-//            mMap.moveCamera(CameraUpdateFactory.newLatLng(mLocation));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, zoomlevel));
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
-        public void onProviderEnabled(String provider) {}
-        public void onProviderDisabled(String provider) {}
-    };
-
-
-
-
     @Override
-    public void onCameraMoveStarted(int reason) {
-
-        if (reason == OnCameraMoveStartedListener.REASON_GESTURE) {
-            //this works
-//            fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
-
-//            Toast.makeText(this, "The user gestured on the map.", Toast.LENGTH_SHORT).show();
-
-        } else if (reason == OnCameraMoveStartedListener.REASON_API_ANIMATION) {
-            //this works
-//            fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
-            //todo bring up bathroom information
-//            Toast.makeText(this, "The user tapped something on the map.",
-//                    Toast.LENGTH_SHORT).show();
-
-        } else if (reason == OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION) {
-//            Toast.makeText(this, "The app moved the camera.", Toast.LENGTH_SHORT).show();
-        }
+    public void onInfoWindowClick(Marker marker) {
+//        marker.showInfoWindow();
     }
 
     @Override
-    public void onCameraMove() {
-//        Toast.makeText(this, "The camera is moving.", Toast.LENGTH_SHORT).show();
-        //this works
-//        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+    public void onInfoWindowLongClick(Marker marker) {
+        //TODO: start new activity for all bathroom info (Juno's task)
     }
 
     @Override
-    public void onCameraMoveCanceled() {
-//        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
-//        Toast.makeText(this, "Camera movement canceled.", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onCameraIdle() {
-        //this works
-//        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
-//        Toast.makeText(this, "The camera has stopped moving.", Toast.LENGTH_SHORT).show();
+    public void onInfoWindowClose(Marker marker) {
+//        marker.hideInfoWindow();
     }
 
 
 
-
+    //exit if the app was not given location permissions
     @Override
     public void onRequestPermissionsResult
             (int requestCode, String permissions[], int[] grantResults) {
@@ -322,4 +298,181 @@ public class MapsActivity extends FragmentActivity implements
             // permissions this app might request
         }
     }
+
+    //everything below here is useless currently
+    @Deprecated
+    @Override
+    public void onCameraMoveStarted(int reason) {
+
+        if (reason == OnCameraMoveStartedListener.REASON_GESTURE) {
+            //this works
+//            fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+
+//            Toast.makeText(this, "The user gestured on the map.", Toast.LENGTH_SHORT).show();
+
+        } else if (reason == OnCameraMoveStartedListener.REASON_API_ANIMATION) {
+            //this works
+//            fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+            //todo bring up bathroom information
+//            Toast.makeText(this, "The user tapped something on the map.",
+//                    Toast.LENGTH_SHORT).show();
+
+        } else if (reason == OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION) {
+//            Toast.makeText(this, "The app moved the camera.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onCameraMove() {
+//        Toast.makeText(this, "The camera is moving.", Toast.LENGTH_SHORT).show();
+        //this works
+        //TODO: use this to load more testingBathrooms as the user moves the map
+//        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+    }
+
+    @Override
+    public void onCameraMoveCanceled() {
+//        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+//        Toast.makeText(this, "Camera movement canceled.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCameraIdle() {
+        //this works
+//        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+//        Toast.makeText(this, "The camera has stopped moving.", Toast.LENGTH_SHORT).show();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private class CustomInfoWindowAdapter implements InfoWindowAdapter {
+
+        private View view;
+
+        public CustomInfoWindowAdapter() {
+            view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+
+//            if (MapsActivity.this.marker != null
+//                    && MapsActivity.this.marker.isInfoWindowShown()) {
+//                MapsActivity.this.marker.hideInfoWindow();
+//                MapsActivity.this.marker.showInfoWindow();
+//            }
+            return null;
+        }
+
+        @Override
+        public View getInfoWindow(final Marker marker) {
+//            MapsActivity.this.marker = marker;
+
+//            String url = null;
+
+//            if (marker.getId() != null &&  != null && markers.size() > 0) {
+//                if ( markers.get(marker.getId()) != null &&
+//                        markers.get(marker.getId()) != null) {
+//                    url = markers.get(marker.getId());
+//                }
+//            }
+//            final ImageView image = ((ImageView) view.findViewById(R.id.badge));
+//            image.setImageResource(R.drawable.pttlogo);
+
+
+//            final String title = marker.getTitle();
+//            final TextView titleUi = ((TextView) view.findViewById(R.id.title));
+//            if (title != null) {
+//                titleUi.setText(title);
+//            } else {
+//                titleUi.setText("");
+//            }
+//
+//            final String snippet = marker.getSnippet();
+//            final TextView snippetUi = ((TextView) view
+//                    .findViewById(R.id.snippet));
+//            if (snippet != null) {
+//                snippetUi.setText(snippet);
+//            } else {
+//                snippetUi.setText("");
+//            }
+
+            return view;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
