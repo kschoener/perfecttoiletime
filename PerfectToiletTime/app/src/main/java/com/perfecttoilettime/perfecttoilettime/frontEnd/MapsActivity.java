@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
@@ -23,20 +25,18 @@ import com.google.android.gms.maps.GoogleMap.*;
 import com.perfecttoilettime.perfecttoilettime.R;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 //created by Kyle
 public class MapsActivity extends FragmentActivity implements
-        OnCameraMoveStartedListener,
-        OnCameraMoveListener,
-        OnCameraMoveCanceledListener,
-        OnCameraIdleListener,
-        OnInfoWindowClickListener,
+        OnMapReadyCallback,
+        OnCameraMoveStartedListener, OnCameraMoveListener,
         OnInfoWindowLongClickListener,
-        OnMapReadyCallback, OnInfoWindowCloseListener {
+        InfoWindowAdapter{
     private GoogleMap mMap;
     private LatLng mLocation;
     private LocationManager mLocationManager;
@@ -52,12 +52,14 @@ public class MapsActivity extends FragmentActivity implements
     private ImageButton prefLauncher;
     private Button findBathroom;
     private ArrayList<Marker> testingBathrooms;
-    private HashMap<Integer, Marker> bathroomIdtoMarker;
-    private HashMap<Integer, JSONArray> bathroomIdtoJSON;
+
+    private HashMap<Integer, JSONObject> bathroomIdtoJSONInfo;
 
 
     private int[] prefValues;
     private int gender = genderActivity.maleValue;
+
+    private View infoWindowView;
 
     private BitmapDescriptor genderColor;
 
@@ -85,8 +87,11 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         MapsInitializer.initialize(getApplicationContext());
 
+        infoWindowView = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+
         genderColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
-        bathroomIdtoMarker = new HashMap<Integer, Marker>();
+
+        bathroomIdtoJSONInfo = new HashMap<Integer, JSONObject>();
 
         Intent startIntent = getIntent();
 
@@ -102,8 +107,8 @@ public class MapsActivity extends FragmentActivity implements
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_REQUEST_CODE);
         }
-        setContentView(R.layout.activity_maps);
 
+        setContentView(R.layout.activity_maps);
 
         jumpToMe = (ImageButton) findViewById(R.id.jumpToMeButton);
         jumpToMe.setOnClickListener(new View.OnClickListener() {
@@ -147,12 +152,14 @@ public class MapsActivity extends FragmentActivity implements
                     jumpToMe.setBackgroundColor(getResources().getColor(R.color.maleBackgroundColor));
                     prefLauncher.setBackgroundColor(getResources().getColor(R.color.maleBackgroundColor));
                     findBathroom.setBackgroundColor(getResources().getColor(R.color.maleBackgroundColor));
+                    infoWindowView.setBackgroundColor(getResources().getColor(R.color.maleBackgroundColor));
                     break;
                 case genderActivity.femaleValue:
                     genderColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE);
                     jumpToMe.setBackgroundColor(getResources().getColor(R.color.femaleBackgroundColor));
                     prefLauncher.setBackgroundColor(getResources().getColor(R.color.femaleBackgroundColor));
                     findBathroom.setBackgroundColor(getResources().getColor(R.color.femaleBackgroundColor));
+                    infoWindowView.setBackgroundColor(getResources().getColor(R.color.femaleBackgroundColor));
                     break;
             }
         }
@@ -177,19 +184,20 @@ public class MapsActivity extends FragmentActivity implements
                 LOCATION_REFRESH_DISTANCE, userLocationListener);
 
         //set InfoWindow
-        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+//        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
+        mMap.setInfoWindowAdapter(this);
 
         //set info window click listener
-        mMap.setOnInfoWindowClickListener(this);
+//        mMap.setOnInfoWindowClickListener(this);
         mMap.setOnInfoWindowLongClickListener(this);
-        mMap.setOnInfoWindowCloseListener(this);
+//        mMap.setOnInfoWindowCloseListener(this);
 
 
         //will load testingBathrooms based on camera bounds
-        mMap.setOnCameraIdleListener(this);
+//        mMap.setOnCameraIdleListener(this);
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnCameraMoveListener(this);
-        mMap.setOnCameraMoveCanceledListener(this);
+//        mMap.setOnCameraMoveCanceledListener(this);
 
 
 
@@ -212,55 +220,89 @@ public class MapsActivity extends FragmentActivity implements
 
     }
 
-    private void fetchData(LatLngBounds bounds){
+    private void fetchData(LatLngBounds bounds) {
         //remove markers no longer in the camera's view
-        updateMarkers(bounds);
+//        updateMarkers(bounds);
         //or this to clear all markers
-        mMap.clear();
+//        mMap.clear();
+        LatLng center = bounds.getCenter();
+        JSONArray db = getBathrooms(center.latitude, center.longitude, 10);
 
-        //randomly add markers to the map
-        double highLat = bounds.northeast.latitude;
-        double highLon = bounds.northeast.longitude;
-        double lowLat = bounds.southwest.latitude;
-        double lowLon = bounds.southwest.longitude;
-        Random rand = new Random();
-        for(int i = 0; i < 30; i++){
-            double tempLat = lowLat + (highLat - lowLat) * rand.nextDouble();
-            double tempLon = lowLon + (highLon - lowLon) * rand.nextDouble();
-            testingBathrooms.add(mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(tempLat, tempLon))
-                    .icon(genderColor)
-                    .title(""+i)
-                    .snippet("This is the "+i+"th bathroom to be added!"))
-            );
-            //TODO: set title to bathroom name
-            // TODO: set snippet with floor number and average rating
-
-        }
-
-//        //todo query the database
-//        ArrayList<Pair<LatLng, String>> locationsFromDb = new ArrayList<>();
-//        //todo look into cluster manager
-//        for(int i = 0; i < locationsFromDb.size(); i++) {
-//            LatLng pos = locationsFromDb.get(i).first;
-//            String bathroomName = locationsFromDb.get(i).second;
-//            testingBathrooms.add(mMap.addMarker(new MarkerOptions().position(pos).title(bathroomName)));
-//        }
-    }
-
-    private void updateMarkers(LatLngBounds bounds){
-        for(int i = 0; i < testingBathrooms.size(); i++) {
-            //if marker not in bounds, remove it from the map and bathroom list
-            if (!bounds.contains(testingBathrooms.get(i).getPosition())) {
-                testingBathrooms.remove(i).remove();
+        //todo look into cluster manager
+        for(int i = 0; i < db.length(); i++) {
+            try {
+                JSONObject temp = db.getJSONObject(i);
+                if (!bathroomIdtoJSONInfo.containsKey(temp.getInt("id"))) {
+                    bathroomIdtoJSONInfo.put(temp.getInt("id"), temp);
+                    mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(temp.getDouble("Latitude"), temp.getDouble("Longitude")))
+                            .icon(genderColor)
+                            .title("" + temp.getInt("id"))
+                    );
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     }
 
 
+
+    private JSONArray getBathrooms(double lat, double lon, int distanceInMiles){
+        //each degree of latitude is approx. 69 miles
+        //each degree of longitude is approx. 55 miles
+        JSONArray db = new JSONArray();
+        //this gives you all bathrooms within 12 miles of the given coordinates
+        //http://socialgainz.com/Bumpr/PerfectToiletTime/getLocation.php?Latitude=12&Longitude=77&Distance=12
+        //"Latitude", "Longitude", "name"
+
+
+        return db;
+    }
+
+    private JSONObject getRatings(int bathroomId){
+        JSONObject ratings = new JSONObject();
+        // http://socialgainz.com/Bumpr/PerfectToiletTime/getRatings.php?bathroomID=1&rand=145
+        // return getJSONObject("average"); -> :{"Wifi":"3.333", "Clean":"4.555", "Busy":"5.000"}
+
+        return ratings;
+    }
+
+    //for InfoWindowAdapter
     @Override
-    public void onInfoWindowClick(Marker marker) {
-//        marker.showInfoWindow();
+    public View getInfoWindow(Marker marker) {
+        //set up infoWindowView and return it
+        try {
+            //get name from id
+            ((TextView)infoWindowView.findViewById(R.id.bathroomName))
+                    .setText(bathroomIdtoJSONInfo.get(Integer.parseInt(marker.getTitle())).getString("name"));
+            //get average
+            JSONObject ratings = getRatings(Integer.parseInt(marker.getTitle()));
+            float totalAverage = 0f;
+            JSONObject averages = ratings.getJSONObject("average");
+            double wifiAvg = averages.getDouble("Wifi");
+            double cleanAvg = averages.getDouble("Clean");
+            double busyAvg = averages.getDouble("Busy");
+            totalAverage = (float)((wifiAvg+cleanAvg+busyAvg)/3);
+            ((RatingBar)infoWindowView.findViewById(R.id.bathroomRating))
+                    .setRating(totalAverage);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        return infoWindowView;
+    }
+    //for InfoWindowAdapter
+    @Override
+    public View getInfoContents(Marker marker) {
+
+//            if (MapsActivity.this.marker != null
+//                    && MapsActivity.this.marker.isInfoWindowShown()) {
+//                MapsActivity.this.marker.hideInfoWindow();
+//                MapsActivity.this.marker.showInfoWindow();
+//            }
+        return null;
     }
 
     @Override
@@ -268,44 +310,7 @@ public class MapsActivity extends FragmentActivity implements
         //TODO: start new activity for all bathroom info (Juno's task)
     }
 
-    @Override
-    public void onInfoWindowClose(Marker marker) {
-//        marker.hideInfoWindow();
-    }
 
-
-
-    //exit if the app was not given location permissions
-    @Override
-    public void onRequestPermissionsResult
-            (int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case LOCATION_REQUEST_CODE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Log.e("PerfectToiletTime", "Not granted location permissions");
-                    finish();
-                    System.exit(1);
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }
-
-    //everything below here is useless currently
-    @Deprecated
     @Override
     public void onCameraMoveStarted(int reason) {
 
@@ -335,149 +340,43 @@ public class MapsActivity extends FragmentActivity implements
 //        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
     }
 
+
+
+
+
+
+
+
+
+
+
+    //exit if the app was not given location permissions
     @Override
-    public void onCameraMoveCanceled() {
-//        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
-//        Toast.makeText(this, "Camera movement canceled.", Toast.LENGTH_SHORT).show();
-    }
+    public void onRequestPermissionsResult
+    (int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-    @Override
-    public void onCameraIdle() {
-        //this works
-//        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
-//        Toast.makeText(this, "The camera has stopped moving.", Toast.LENGTH_SHORT).show();
-    }
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
 
+                } else {
 
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Log.e("PerfectToiletTime", "Not granted location permissions");
+                    finish();
+                    System.exit(1);
+                }
+                return;
+            }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private class CustomInfoWindowAdapter implements InfoWindowAdapter {
-
-        private View view;
-
-        public CustomInfoWindowAdapter() {
-            view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-        }
-
-        @Override
-        public View getInfoContents(Marker marker) {
-
-//            if (MapsActivity.this.marker != null
-//                    && MapsActivity.this.marker.isInfoWindowShown()) {
-//                MapsActivity.this.marker.hideInfoWindow();
-//                MapsActivity.this.marker.showInfoWindow();
-//            }
-            return null;
-        }
-
-        @Override
-        public View getInfoWindow(final Marker marker) {
-//            MapsActivity.this.marker = marker;
-
-//            String url = null;
-
-//            if (marker.getId() != null &&  != null && markers.size() > 0) {
-//                if ( markers.get(marker.getId()) != null &&
-//                        markers.get(marker.getId()) != null) {
-//                    url = markers.get(marker.getId());
-//                }
-//            }
-//            final ImageView image = ((ImageView) view.findViewById(R.id.badge));
-//            image.setImageResource(R.drawable.pttlogo);
-
-
-//            final String title = marker.getTitle();
-//            final TextView titleUi = ((TextView) view.findViewById(R.id.title));
-//            if (title != null) {
-//                titleUi.setText(title);
-//            } else {
-//                titleUi.setText("");
-//            }
-//
-//            final String snippet = marker.getSnippet();
-//            final TextView snippetUi = ((TextView) view
-//                    .findViewById(R.id.snippet));
-//            if (snippet != null) {
-//                snippetUi.setText(snippet);
-//            } else {
-//                snippetUi.setText("");
-//            }
-
-            return view;
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

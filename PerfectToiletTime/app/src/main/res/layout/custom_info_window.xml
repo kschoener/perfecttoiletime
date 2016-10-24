@@ -22,23 +22,23 @@
         android:background="@android:color/darker_gray"
         android:layout_below="@+id/bathroomName"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/bathroomDescription"
-        android:layout_below="@+id/bathroomInfoSpacer"
-        android:gravity="center"
-        android:text="Located to the right of the front doors inside Davis"
-        android:textColor="@color/fontColor"
-        android:textAlignment="center"
-        android:textSize="@dimen/infoFontSize"
-        android:layout_centerHorizontal="true"/>
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/bathroomDescription"-->
+        <!--android:layout_below="@+id/bathroomInfoSpacer"-->
+        <!--android:gravity="center"-->
+        <!--android:text="Located to the right of the front doors inside Davis"-->
+        <!--android:textColor="@color/fontColor"-->
+        <!--android:textAlignment="center"-->
+        <!--android:textSize="@dimen/infoFontSize"-->
+        <!--android:layout_centerHorizontal="true" />-->
 
     <RatingBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/bathroomRating"
-        android:layout_below="@+id/bathroomDescription"
+        android:layout_below="@+id/bathroomInfoSpacer"
         android:layout_centerHorizontal="true"
         android:isIndicator="true"
         android:numStars="5"
