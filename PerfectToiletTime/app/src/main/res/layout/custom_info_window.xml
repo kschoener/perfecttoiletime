@@ -15,11 +15,18 @@
         android:textSize="@dimen/titleFontSize"
         android:layout_centerHorizontal="true"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:id="@+id/bathroomInfoSpacer"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/bathroomName"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/bathroomDescription"
-        android:layout_below="@+id/bathroomName"
+        android:layout_below="@+id/bathroomInfoSpacer"
         android:gravity="center"
         android:text="Located to the right of the front doors inside Davis"
         android:textColor="@color/fontColor"

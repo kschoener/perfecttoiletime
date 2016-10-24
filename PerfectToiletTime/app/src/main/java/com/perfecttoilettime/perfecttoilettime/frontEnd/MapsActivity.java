@@ -15,14 +15,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
 import com.google.android.gms.maps.GoogleMap.*;
 
 import com.perfecttoilettime.perfecttoilettime.R;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +52,9 @@ public class MapsActivity extends FragmentActivity implements
     private ImageButton prefLauncher;
     private Button findBathroom;
     private ArrayList<Marker> testingBathrooms;
-    private HashMap<Integer, Marker> dbBathrooms;
+    private HashMap<Integer, Marker> bathroomIdtoMarker;
+    private HashMap<Integer, JSONArray> bathroomIdtoJSON;
+
 
     private int[] prefValues;
     private int gender = genderActivity.maleValue;
@@ -82,7 +84,10 @@ public class MapsActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MapsInitializer.initialize(getApplicationContext());
+
         genderColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+        bathroomIdtoMarker = new HashMap<Integer, Marker>();
+
         Intent startIntent = getIntent();
 
         if(startIntent.getExtras().containsKey(preferencesActivity.preferenceExtraKey)){
