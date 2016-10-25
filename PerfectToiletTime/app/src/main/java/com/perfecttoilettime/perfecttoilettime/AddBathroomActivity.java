@@ -30,8 +30,6 @@ public class AddBathroomActivity extends AppCompatActivity {
                 String description = bathroomDescription.getText().toString(); //description of bathroom from text field
                 String longitude = ""; //longitude of bathroom location(always empty for now until figure out how to implement this)
                 String latitude = ""; //latitude of bathroom location(always empty for now until figure out how to implement this)
-                System.out.println(name);
-                System.out.println(description);
             }
         });
     }
