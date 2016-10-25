@@ -45,7 +45,8 @@
         <activity
             android:name=".testmapsactivity"
             android:label="@string/title_activity_testmapsactivity" />
-        <activity android:name=".MailSenderActivity"></activity>
+        <activity android:name=".MailSenderActivity" />
+        <activity android:name=".AddBathroomActivity"></activity>
     </application>
 
 </manifest>

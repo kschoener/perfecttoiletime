@@ -9,6 +9,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.perfecttoilettime.perfecttoilettime.AddBathroomActivity;
 import com.perfecttoilettime.perfecttoilettime.MailSenderActivity;
 import com.perfecttoilettime.perfecttoilettime.R;
 
@@ -65,6 +66,14 @@ public class preferencesActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(preferencesActivity.this, MailSenderActivity.class));
+            }
+        });
+
+        Button addBathroomButton = (Button) findViewById(R.id.addBathroomButton);
+        addBathroomButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(preferencesActivity.this, AddBathroomActivity.class));
             }
         });
 
