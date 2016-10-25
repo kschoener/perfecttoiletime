@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -22,14 +23,21 @@ import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
 import com.google.android.gms.maps.GoogleMap.*;
 
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
 import com.perfecttoilettime.perfecttoilettime.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.Random;
+
 
 //created by Kyle
 public class MapsActivity extends FragmentActivity implements
@@ -37,6 +45,7 @@ public class MapsActivity extends FragmentActivity implements
         OnCameraMoveStartedListener, OnCameraMoveListener,
         OnInfoWindowLongClickListener,
         InfoWindowAdapter{
+
     private GoogleMap mMap;
     private LatLng mLocation;
     private LocationManager mLocationManager;
@@ -45,13 +54,11 @@ public class MapsActivity extends FragmentActivity implements
     private final int LOCATION_REQUEST_CODE = 8;
     private final float zoomlevel = 16.0f;
 
-    //todo delete : for demo
     private boolean madeBathrooms = false;
 
     private ImageButton jumpToMe;
     private ImageButton prefLauncher;
     private Button findBathroom;
-    private ArrayList<Marker> testingBathrooms;
 
     private HashMap<Integer, JSONObject> bathroomIdtoJSONInfo;
 
@@ -63,15 +70,33 @@ public class MapsActivity extends FragmentActivity implements
 
     private BitmapDescriptor genderColor;
 
+    private boolean gettingBathrooms = false;
+
+    /*private class MyClusterItem implements ClusterItem{
+        private LatLng myLoc;
+        private int bathroomId;
+        public MyClusterItem(LatLng myLoc, int id){
+            this.myLoc = myLoc;
+            this.bathroomId = id;
+        }
+        private int getBathroomId(){return this.bathroomId;}
+        @Override
+        public LatLng getPosition() {
+            return myLoc;
+        }
+    }*/
+//    private ClusterManager<MyClusterItem> mClusterManager;
+
     private final LocationListener userLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             mLocation = new LatLng(location.getLatitude(), location.getLongitude());
-            mMap.clear();
-            mMap.addMarker(new MarkerOptions().position(mLocation).title("MY LOCATION"));
+//            mMap.clear();
+//            mMap.addMarker(new MarkerOptions().position(mLocation).title("MY LOCATION"));
             if(!madeBathrooms){
-                fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
-//                madeBathrooms = true;
+                madeBathrooms = true;
+                LatLng center = mMap.getProjection().getVisibleRegion().latLngBounds.getCenter();
+                startBathroomRetrieval(center.latitude, center.longitude, 10);
             }
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, zoomlevel));
         }
@@ -85,13 +110,12 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //allows us to use the color makers
         MapsInitializer.initialize(getApplicationContext());
 
         infoWindowView = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-
         genderColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
-
-        bathroomIdtoJSONInfo = new HashMap<Integer, JSONObject>();
+        bathroomIdtoJSONInfo = new HashMap<>();
 
         Intent startIntent = getIntent();
 
@@ -99,7 +123,6 @@ public class MapsActivity extends FragmentActivity implements
             prefValues = startIntent.getExtras().getIntArray(preferencesActivity.preferenceExtraKey);
         }
 
-        testingBathrooms = new ArrayList<Marker>();
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -115,7 +138,8 @@ public class MapsActivity extends FragmentActivity implements
             @Override
             public void onClick(View v) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, zoomlevel));
-//                fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+                LatLng center = mMap.getProjection().getVisibleRegion().latLngBounds.getCenter();
+                startBathroomRetrieval(center.latitude, center.longitude, 10);
             }
         });
 
@@ -138,12 +162,14 @@ public class MapsActivity extends FragmentActivity implements
         findBathroom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLocation = new LatLng(43.002341, -78.788195);
+//                mLocation = new LatLng(43.002341, -78.788195);
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, zoomlevel));
-                fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+                LatLng center = mMap.getProjection().getVisibleRegion().latLngBounds.getCenter();
+                startBathroomRetrieval(center.latitude, center.longitude, 10);
             }
         });
 
+        //if the user's gender was passed, set the color scheme accordingly
         if(startIntent.getExtras().containsKey(genderActivity.genderExtraKey)){
             gender = startIntent.getExtras().getInt(genderActivity.genderExtraKey);
             switch (gender){
@@ -171,6 +197,9 @@ public class MapsActivity extends FragmentActivity implements
         mapFragment.getMapAsync(this);
     }
 
+
+
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -183,23 +212,21 @@ public class MapsActivity extends FragmentActivity implements
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
                 LOCATION_REFRESH_DISTANCE, userLocationListener);
 
+//        mClusterManager = new ClusterManager<MyClusterItem>(this, mMap);
+
+
         //set InfoWindow
-//        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
         mMap.setInfoWindowAdapter(this);
 
         //set info window click listener
 //        mMap.setOnInfoWindowClickListener(this);
         mMap.setOnInfoWindowLongClickListener(this);
 //        mMap.setOnInfoWindowCloseListener(this);
-
-
-        //will load testingBathrooms based on camera bounds
+        //set camera move listeners
 //        mMap.setOnCameraIdleListener(this);
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnCameraMoveListener(this);
 //        mMap.setOnCameraMoveCanceledListener(this);
-
-
 
 //        String locationProvider = LocationManager.NETWORK_PROVIDER;
         String locationProvider = LocationManager.GPS_PROVIDER;
@@ -207,64 +234,95 @@ public class MapsActivity extends FragmentActivity implements
         String firstMarker;
         if(lastKnownLocation == null){
             mLocation = new LatLng(43.002341, -78.788195);
-            firstMarker = "Davis Hall";
+//            firstMarker = "Davis Hall";
         }else{
             mLocation= new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-            firstMarker = "My Location";
+//            firstMarker = "My Location";
         }
-        mMap.addMarker(new MarkerOptions().position(mLocation).title(firstMarker));
+//        mMap.addMarker(new MarkerOptions().position(mLocation).title(firstMarker));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, zoomlevel));
-        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+        LatLng center = mMap.getProjection().getVisibleRegion().latLngBounds.getCenter();
+        startBathroomRetrieval(center.latitude, center.longitude, 10);
         // Add a marker in Sydney and move the camera
 //        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-
     }
 
-    private void fetchData(LatLngBounds bounds) {
-        //remove markers no longer in the camera's view
-//        updateMarkers(bounds);
-        //or this to clear all markers
-//        mMap.clear();
-        LatLng center = bounds.getCenter();
-        JSONArray db = getBathrooms(center.latitude, center.longitude, 10);
 
-        //todo look into cluster manager
-        for(int i = 0; i < db.length(); i++) {
-            try {
-                JSONObject temp = db.getJSONObject(i);
-                if (!bathroomIdtoJSONInfo.containsKey(temp.getInt("id"))) {
-                    bathroomIdtoJSONInfo.put(temp.getInt("id"), temp);
-                    mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(temp.getDouble("Latitude"), temp.getDouble("Longitude")))
-                            .icon(genderColor)
-                            .title("" + temp.getInt("id"))
-                    );
+
+
+    private void addBathroomMarkers(String jsonArrayString) {
+        try {
+            JSONArray db = new JSONArray(jsonArrayString);
+            //todo look into cluster manager -- looks to suck with what i want to do
+            for (int i = 0; i < db.length(); i++) {
+                try {
+                    JSONObject temp = db.getJSONObject(i);
+                    if (!bathroomIdtoJSONInfo.containsKey(temp.getInt("id"))) {
+                        bathroomIdtoJSONInfo.put(temp.getInt("id"), temp);
+                        mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(temp.getDouble("Latitude"), temp.getDouble("Longitude")))
+                                .icon(genderColor)
+                                .title("" + temp.getInt("id"))
+                        );
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            gettingBathrooms = false;
         }
     }
 
 
 
-    private JSONArray getBathrooms(double lat, double lon, int distanceInMiles){
+
+    private void startBathroomRetrieval(double lat, double lon, int distanceInMiles){
         //each degree of latitude is approx. 69 miles
         //each degree of longitude is approx. 55 miles
-        JSONArray db = new JSONArray();
         //this gives you all bathrooms within 12 miles of the given coordinates
         //http://socialgainz.com/Bumpr/PerfectToiletTime/getLocation.php?Latitude=12&Longitude=77&Distance=12
         //"Latitude", "Longitude", "name"
-
-
-        return db;
+        if(!gettingBathrooms) {
+            gettingBathrooms = true;
+            JSONArray db = new JSONArray();
+            JSONAsyncTask jsonBathrooms = new JSONAsyncTask(
+                    "http://socialgainz.com/Bumpr/PerfectToiletTime/getLocation.php?Latitude=" + lat +
+                            "&Longitude=" + lon + "&Distance=" + distanceInMiles,
+                    this
+            );
+            jsonBathrooms.execute();
+        }
+//        try {
+//            String s = jsonBathrooms.execute().get();
+//            db = new JSONArray(s);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        return;
     }
 
+
+
+
     private JSONObject getRatings(int bathroomId){
-        JSONObject ratings = new JSONObject();
         // http://socialgainz.com/Bumpr/PerfectToiletTime/getRatings.php?bathroomID=1&rand=145
         // return getJSONObject("average"); -> :{"Wifi":"3.333", "Clean":"4.555", "Busy":"5.000"}
-
+        JSONObject ratings = new JSONObject();
+        JSONAsyncTask jsonRatings = new JSONAsyncTask(
+                "http://socialgainz.com/Bumpr/PerfectToiletTime/getRatings.php?bathroomID="+bathroomId+
+                        "&rand="+(new Random()).nextInt(),
+                this
+        );
+        //can't run this in parallel, must wait
+        try {
+            String s = jsonRatings.execute().get();
+            ratings = new JSONObject(s);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return ratings;
     }
 
@@ -275,7 +333,10 @@ public class MapsActivity extends FragmentActivity implements
         try {
             //get name from id
             ((TextView)infoWindowView.findViewById(R.id.bathroomName))
-                    .setText(bathroomIdtoJSONInfo.get(Integer.parseInt(marker.getTitle())).getString("name"));
+                    .setText(bathroomIdtoJSONInfo.get(
+                            Integer.parseInt(marker.getTitle())).getString("name")
+                    )
+            ;
             //get average
             JSONObject ratings = getRatings(Integer.parseInt(marker.getTitle()));
             float totalAverage = 0f;
@@ -284,8 +345,7 @@ public class MapsActivity extends FragmentActivity implements
             double cleanAvg = averages.getDouble("Clean");
             double busyAvg = averages.getDouble("Busy");
             totalAverage = (float)((wifiAvg+cleanAvg+busyAvg)/3);
-            ((RatingBar)infoWindowView.findViewById(R.id.bathroomRating))
-                    .setRating(totalAverage);
+            ((RatingBar)infoWindowView.findViewById(R.id.bathroomRating)).setRating(totalAverage);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -316,13 +376,15 @@ public class MapsActivity extends FragmentActivity implements
 
         if (reason == OnCameraMoveStartedListener.REASON_GESTURE) {
             //this works
-//            fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+//            LatLng center = mMap.getProjection().getVisibleRegion().latLngBounds.getCenter();
+//            startBathroomRetrieval(center.latitude, center.longitude, 10);
 
 //            Toast.makeText(this, "The user gestured on the map.", Toast.LENGTH_SHORT).show();
 
         } else if (reason == OnCameraMoveStartedListener.REASON_API_ANIMATION) {
             //this works
-//            fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+//            LatLng center = mMap.getProjection().getVisibleRegion().latLngBounds.getCenter();
+//            startBathroomRetrieval(center.latitude, center.longitude, 10);
             //todo bring up bathroom information
 //            Toast.makeText(this, "The user tapped something on the map.",
 //                    Toast.LENGTH_SHORT).show();
@@ -337,13 +399,78 @@ public class MapsActivity extends FragmentActivity implements
 //        Toast.makeText(this, "The camera is moving.", Toast.LENGTH_SHORT).show();
         //this works
         //TODO: use this to load more testingBathrooms as the user moves the map
-//        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+//        LatLng center = mMap.getProjection().getVisibleRegion().latLngBounds.getCenter();
+//        startBathroomRetrieval(center.latitude, center.longitude, 10);
     }
 
 
 
 
 
+    public class JSONAsyncTask extends AsyncTask<Void, Void, String> {
+        private String mUrl;
+        private MapsActivity mRef;
+
+        public JSONAsyncTask(String url, MapsActivity ref) {
+            mUrl = url;
+            mRef = ref;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String resultString = null;
+            resultString = getJSON(mUrl);
+            return resultString;
+        }
+
+        @Override
+        protected void onPostExecute(String strings) {
+            super.onPostExecute(strings);
+            mRef.addBathroomMarkers(strings);
+
+        }
+
+        private String getJSON(String url) {
+            HttpURLConnection c = null;
+            try {
+                URL u = new URL(url);
+                c = (HttpURLConnection) u.openConnection();
+                c.connect();
+                int status = c.getResponseCode();
+                switch (status) {
+                    case 200:
+                    case 201:
+                        BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        StringBuilder sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+//                            sb.append(line+"\n");
+                            sb.append(line);
+                        }
+                        br.close();
+                        return sb.toString();
+                }
+
+            } catch (Exception ex) {
+                return ex.toString();
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        //disconnect error
+                    }
+                }
+            }
+            return null;
+        }
+    }
+    //end of async task class
 
 
 
