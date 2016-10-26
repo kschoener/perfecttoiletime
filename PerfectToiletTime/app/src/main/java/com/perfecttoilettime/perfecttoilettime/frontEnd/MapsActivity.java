@@ -43,8 +43,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.lang.*;
+
 
 //created by Kyle
 public class MapsActivity extends FragmentActivity implements
@@ -217,11 +221,73 @@ public class MapsActivity extends FragmentActivity implements
         startActivity(intent);
     }
 
-
+    // Created by Steven
     public void findClosest(View view) {
         Intent intent = new Intent(this, MapsActivity.class);
         mMap.clear();
+        LinkedHashMap<Double, Double> latLongLinkedHashMap = new LinkedHashMap();
+        HashMap<Integer, Double> distancesHashMap = new HashMap();
+        HashMap<Integer, Double> sortedDistancesHashMap = new HashMap();
+        HashMap<Integer, Double> latHashMap = new HashMap();
+        HashMap<Integer, Double> longHashMap = new HashMap();
+        int id = 0;
+        Double distance = 0.0;
+        Double latitude = 0.0;
+        Double longitude = 0.0;
+        String name = "";
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        String locationProvider = LocationManager.GPS_PROVIDER;
+        Location lastKnownLocation = mLocationManager.getLastKnownLocation(locationProvider);
+
+        Double myLat = lastKnownLocation.getLatitude();
+        Double myLong = lastKnownLocation.getLongitude();
+
+        //Double myLat = 42.0;
+        //Double myLong = 42.0;
+
+        try {
+            String locationUrlString = "http://socialgainz.com/Bumpr/PerfectToiletTime/GetAllLocations.php";
+            URL url = new URL(locationUrlString);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            String rs = readStream(in);
+            JSONArray locArray = new JSONArray(rs);
+
+            for (int i=0; i<locArray.length(); i++) {
+                id++;
+                JSONObject locObj = locArray.getJSONObject(i);
+                String latString = locObj.getString("Latitude");
+                String longString = locObj.getString("Longitude");
+                Double latDouble = Double.parseDouble(latString);
+                Double longDouble = Double.parseDouble(longString);
+                latHashMap.put(id, latDouble);
+                longHashMap.put(id, longDouble);
+                latLongLinkedHashMap.put(latDouble, longDouble);
+                distance = Math.sqrt(Math.pow(myLat-latDouble,2)+Math.pow(myLong-longDouble,2));
+                distancesHashMap.put(id, distance);
+            }
+            sortedDistancesHashMap = sortHashMapByValueLeastToGreatest(distancesHashMap);
+            HashMap.Entry<Integer, Double> entry = (HashMap.Entry<Integer, Double>) sortedDistancesHashMap.entrySet().iterator().next();
+            int closestBathroom = entry.getKey();
+            latitude = latHashMap.get(closestBathroom);
+            longitude = longHashMap.get(closestBathroom);
+            JSONObject locNameObj = locArray.getJSONObject(closestBathroom-1);
+            name = locNameObj.getString("name");
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name));
         startActivity(intent);
     }
     // Created by Steven
@@ -235,6 +301,7 @@ public class MapsActivity extends FragmentActivity implements
         int bestBathroom;
         double longDouble = 0;
         double latDouble = 0;
+        String name = "";
 
         // Makes a JSON Array of all the bathrooms.
         try {
@@ -287,13 +354,15 @@ public class MapsActivity extends FragmentActivity implements
             JSONObject ratingsObject = new JSONObject(reaStream);
             String latValue = ratingsObject.getJSONObject("info").getString("Latitude");
             String longValue = ratingsObject.getJSONObject("info").getString("Longitude");
+            name = ratingsObject.getJSONObject("info").getString("name");
             latDouble = Double.parseDouble(latValue);
             longDouble = Double.parseDouble(longValue);
 
         }catch(Exception e){
             e.printStackTrace();
         }
-        mMap.addMarker(new MarkerOptions().position(new LatLng(latDouble, longDouble)).title("Bathroom_ID:"+bestBathroom));
+        //mMap.addMarker(new MarkerOptions().position(new LatLng(latDouble, longDouble)).title("Bathroom_ID:"+bestBathroom));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(latDouble, longDouble)).title(name));
         startActivity(intent);
     }
 
@@ -308,6 +377,20 @@ public class MapsActivity extends FragmentActivity implements
         Collections.sort(list, new Comparator<HashMap.Entry<Integer, Double>>() {
             public int compare(HashMap.Entry<Integer, Double> o1, HashMap.Entry<Integer, Double> o2) {
                 return(o2.getValue().compareTo(o1.getValue()));
+            }
+        });
+        HashMap<Integer, Double> sortedHashMap = new LinkedHashMap<Integer, Double>();
+        for (HashMap.Entry<Integer, Double> entry : list) {
+            sortedHashMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedHashMap;
+    }
+
+    public HashMap<Integer, Double> sortHashMapByValueLeastToGreatest(HashMap<Integer, Double> unsortedHashMap) {
+        List<HashMap.Entry<Integer, Double>> list = new LinkedList<HashMap.Entry<Integer, Double>>(unsortedHashMap.entrySet());
+        Collections.sort(list, new Comparator<HashMap.Entry<Integer, Double>>() {
+            public int compare(HashMap.Entry<Integer, Double> o1, HashMap.Entry<Integer, Double> o2) {
+                return(o1.getValue().compareTo(o2.getValue()));
             }
         });
         HashMap<Integer, Double> sortedHashMap = new LinkedHashMap<Integer, Double>();
