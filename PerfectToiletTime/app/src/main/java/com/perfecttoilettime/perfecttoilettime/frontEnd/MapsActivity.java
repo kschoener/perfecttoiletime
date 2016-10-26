@@ -101,6 +101,7 @@ public class MapsActivity extends FragmentActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
     @Override
@@ -140,6 +141,18 @@ public class MapsActivity extends FragmentActivity implements
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 //        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+        mMap.addMarker( new MarkerOptions().position(new LatLng(10,10)).draggable(true).title("Add Restroom"));
+        mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                    Intent intent1 = new Intent(getApplicationContext(), addinfoActivity.class);
+                    String title = marker.getTitle();
+                    intent1.putExtra("Add Restroom", title);
+                    startActivity(intent1);
+            }
+
+        });
+
 
     }
 
