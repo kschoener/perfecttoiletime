@@ -27,6 +27,8 @@ import com.perfecttoilettime.perfecttoilettime.R;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static com.perfecttoilettime.perfecttoilettime.R.attr.title;
+
 //created by Kyle
 public class MapsActivity extends FragmentActivity implements
         OnCameraMoveStartedListener,
@@ -141,12 +143,11 @@ public class MapsActivity extends FragmentActivity implements
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 //        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
-        mMap.addMarker( new MarkerOptions().position(new LatLng(10,10)).draggable(true).title("Add Restroom"));
-        mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+        mMap.addMarker(new MarkerOptions().position(mLocation).title("add bathroom"));
+        mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
             @Override
-            public void onInfoWindowClick(Marker marker) {
+            public void onMapLongClick(LatLng latLng) {
                     Intent intent1 = new Intent(getApplicationContext(), addinfoActivity.class);
-                    String title = marker.getTitle();
                     intent1.putExtra("Add Restroom", title);
                     startActivity(intent1);
             }
