@@ -368,6 +368,9 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onInfoWindowLongClick(Marker marker) {
         //TODO: start new activity for all bathroom info (Juno's task)
+        LatLng pos = marker.getPosition();
+        double lat = pos.latitude;
+        double lon = pos.longitude;
     }
 
 
