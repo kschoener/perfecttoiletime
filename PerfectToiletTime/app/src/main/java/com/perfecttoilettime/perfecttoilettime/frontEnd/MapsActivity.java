@@ -14,11 +14,9 @@ import android.support.v4.content.ContextCompat;
 import android.location.LocationListener;
 //import android.location.Location;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -32,6 +30,21 @@ import com.perfecttoilettime.perfecttoilettime.R;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 //created by Kyle
 public class MapsActivity extends FragmentActivity implements
@@ -198,53 +211,126 @@ public class MapsActivity extends FragmentActivity implements
             }
         }
     }
-    //--------------------------------------------------------------------------------------------------------------------------------------
 
     public void menuLauncher(View view) {
-        Intent intent = new Intent(this, menuActivity.class);
+        Intent intent = new Intent(this, MenuActivity.class);
         startActivity(intent);
     }
 
-    // Not finished
+
     public void findClosest(View view) {
         Intent intent = new Intent(this, MapsActivity.class);
         mMap.clear();
-        //OR
-        //clearMarkers();
-        //bathrooms.add();
-        //d = sqrt((x2-x1)^2)+(y2-y1)^2)
-        // figure out how to iterate through all bathrooms in database and get latlng of each
-        Location currentLocation = new Location("");
-        //String locationProvider = LocationManager.GPS_PROVIDER;
-        //Location lastKnownLocation = mLocationManager.getLastKnownLocation(locationProvider);
-        //mLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-        LatLng latLngOfCurrentLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        LatLng closest = new LatLng(42, 42);//.title("") // put in coordinates from closest
-        //currentLocation.distanceTo(currentLocation);
-        //currentLocation.distanceBetween(startLat, startLong, endLat, endLong);
-        mMap.addMarker(new MarkerOptions().position(closest));
+
         startActivity(intent);
     }
-
+    // Created by Steven
     public void findBest(View view) {
         Intent intent = new Intent(this, MapsActivity.class);
+        mMap.clear();
+        JSONArray locationArray = new JSONArray();
+        int i;
+        HashMap sortedBathroomsAvgRatingSumHashMap = new HashMap();
+        HashMap bathroomsAvgRatingSumHashMap = new HashMap();
+        int bestBathroom;
+        double longDouble = 0;
+        double latDouble = 0;
+
+        // Makes a JSON Array of all the bathrooms.
+        try {
+            //String locationUrlString = "http://socialgainz.com/Bumpr/PerfectToiletTime/getLocation.php";
+            String locationUrlString = "http://socialgainz.com/Bumpr/PerfectToiletTime/GetAllLocations.php";
+            URL url = new URL(locationUrlString);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            String rs = readStream(in);
+            JSONArray locArray = new JSONArray(rs);
+            locationArray = locArray;
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        try {
+            for (i=1; i<locationArray.length()+1; i++) {
+                // Goes through every bathroom's ratings page, sums the average values, and puts thems into a HashMap
+                String ratingsUrlString ="http://socialgainz.com/Bumpr/PerfectToiletTime/getRatings.php?bathroomID="+i+"&rand="+8;
+                //String ratingsUrlString ="http://socialgainz.com/Bumpr/PerfectToiletTime/getRatings.php?bathroomID="+i+"&rand="+10;
+                URL url2 = new URL(ratingsUrlString);
+                HttpURLConnection urlConnection2 = (HttpURLConnection) url2.openConnection();
+                InputStream inp = new BufferedInputStream(urlConnection2.getInputStream());
+                String rStream = readStream(inp);
+                JSONObject ratingsObject = new JSONObject(rStream);
+                String avgBusyString = ratingsObject.getJSONObject("average").getString("Busy");
+                String avgCleanString = ratingsObject.getJSONObject("average").getString("Clean");
+                String avgWifiString = ratingsObject.getJSONObject("average").getString("Wifi");
+                Double avgBusyDouble = Double.parseDouble(avgBusyString);
+                Double avgCleanDouble = Double.parseDouble(avgCleanString);
+                Double avgWifiDouble = Double.parseDouble(avgWifiString);
+                Double sumOfAverages = avgBusyDouble + avgCleanDouble + avgWifiDouble;
+                bathroomsAvgRatingSumHashMap.put(i,sumOfAverages);
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        // HashMap is sorted so that the best rated is on top.
+        sortedBathroomsAvgRatingSumHashMap = sortHashMapByValue(bathroomsAvgRatingSumHashMap);
+        HashMap.Entry<Integer, Double> entry = (HashMap.Entry<Integer, Double>) sortedBathroomsAvgRatingSumHashMap.entrySet().iterator().next();
+        bestBathroom = entry.getKey();
+        try {
+            // Goes through the ratings page for the best bathroom and retrieves the coordinates.
+            String bestUrlString = "http://socialgainz.com/Bumpr/PerfectToiletTime/getRatings.php?bathroomID="+bestBathroom+"&rand="+8;
+            URL url3 = new URL(bestUrlString);
+            HttpURLConnection urlConnection3 = (HttpURLConnection) url3.openConnection();
+            InputStream inpu = new BufferedInputStream(urlConnection3.getInputStream());
+            String reaStream = readStream(inpu);
+            JSONObject ratingsObject = new JSONObject(reaStream);
+            String latValue = ratingsObject.getJSONObject("info").getString("Latitude");
+            String longValue = ratingsObject.getJSONObject("info").getString("Longitude");
+            latDouble = Double.parseDouble(latValue);
+            longDouble = Double.parseDouble(longValue);
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        mMap.addMarker(new MarkerOptions().position(new LatLng(latDouble, longDouble)).title("Bathroom_ID:"+bestBathroom));
         startActivity(intent);
     }
 
     public void specifyBathroom(View view) {
-        Intent intent = new Intent(this, specifyActivity.class);
+        Intent intent = new Intent(this, SpecifyActivity.class);
         startActivity(intent);
     }
 
-    //clears arrayList of bathroom markers
-    private void clearMarkers() {
-        //for(int i = 0; i < bathrooms.size(); i++) {
-        //    bathrooms.remove(i);
-        //}
-        bathrooms.clear();
+    // Sorts HashMap by value.
+    public HashMap<Integer, Double> sortHashMapByValue(HashMap<Integer, Double> unsortedHashMap) {
+        List<HashMap.Entry<Integer, Double>> list = new LinkedList<HashMap.Entry<Integer, Double>>(unsortedHashMap.entrySet());
+        Collections.sort(list, new Comparator<HashMap.Entry<Integer, Double>>() {
+            public int compare(HashMap.Entry<Integer, Double> o1, HashMap.Entry<Integer, Double> o2) {
+                return(o2.getValue().compareTo(o1.getValue()));
+            }
+        });
+        HashMap<Integer, Double> sortedHashMap = new LinkedHashMap<Integer, Double>();
+        for (HashMap.Entry<Integer, Double> entry : list) {
+            sortedHashMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedHashMap;
     }
-    //--------------------------------------------------------------------------------------------------------------------------------------
 
+    // From Ted's branch
+    private String readStream(InputStream is) {
+        try {
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            int i = is.read();
+            while(i != -1) {
+                bo.write(i);
+                i = is.read();
+            }
+            return bo.toString();
+        } catch (IOException e) {
+            return "";
+        }
+    }
 
     private final LocationListener userLocationListener = new LocationListener() {
         @Override
