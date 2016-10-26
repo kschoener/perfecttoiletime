@@ -1,5 +1,6 @@
 package com.perfecttoilettime.perfecttoilettime.frontEnd;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,18 +14,22 @@ import com.perfecttoilettime.perfecttoilettime.R;
 
 public class addinfoActivity extends AppCompatActivity {
     EditText eText;
-    Button btn;
 
+    public static final String extraKey = "addinfo";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addinfo);
         eText = (EditText) findViewById(R.id.editText);
-        btn.setOnClickListener(new View.OnClickListener() {
+        Button saveButton = (Button) findViewById(R.id.addsavebtn);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                String str = eText.getText().toString();
-                Toast msg = Toast.makeText(getBaseContext(),str,Toast.LENGTH_LONG);
-                msg.show();
+                Intent startMap = new Intent(v.getContext(), MapsActivity.class);
+                    //todo add save functionality for add bathroom info
+
+//                startMap.putExtra(extraKey, extras);
+                startActivity(startMap);
             }
         });
 
