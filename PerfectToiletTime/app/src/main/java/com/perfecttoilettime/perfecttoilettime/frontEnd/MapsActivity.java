@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
 import android.location.LocationListener;
-//import android.location.Location;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,8 +28,6 @@ import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
 import com.google.android.gms.maps.GoogleMap.*;
 
-import com.google.maps.android.clustering.ClusterItem;
-import com.google.maps.android.clustering.ClusterManager;
 import com.perfecttoilettime.perfecttoilettime.R;
 
 import org.json.JSONArray;
@@ -61,6 +58,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.*;
+import static com.perfecttoilettime.perfecttoilettime.R.attr.title;
 
 //created by Kyle
 public class MapsActivity extends FragmentActivity implements
@@ -267,6 +265,20 @@ public class MapsActivity extends FragmentActivity implements
         startBathroomRetrieval(center.latitude, center.longitude, 10);
         // Add a marker in Sydney and move the camera
 //        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+//        LatLng sydney = new LatLng(-34, 151);
+//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+//        fetchData(mMap.getProjection().getVisibleRegion().latLngBounds);
+        mMap.addMarker(new MarkerOptions().position(mLocation).title("add bathroom"));
+        mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                    Intent intent1 = new Intent(getApplicationContext(), addinfoActivity.class);
+                    intent1.putExtra("Add Restroom", title);
+                    startActivity(intent1);
+            }
+
+        });
     }
 
 

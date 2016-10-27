@@ -52,6 +52,9 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".frontEnd.MenuActivity"></activity>
+        <activity android:name=".frontEnd.BathInfoActivity" />
+        <activity android:name=".frontEnd.addinfoActivity"></activity>
+
     </application>
 
 </manifest>
