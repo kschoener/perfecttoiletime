@@ -208,4 +208,21 @@
         android:layout_above="@+id/prefSaveButton"
         android:layout_alignStart="@+id/result5" />
 
+    <Button
+        android:text="Report A Problem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:id="@+id/emailButton"
+        android:layout_below="@+id/prefSaveButton"
+        android:layout_alignStart="@+id/pref6" />
+
+    <Button
+        android:text="Add new bathroom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/addBathroomButton"
+        android:layout_toEndOf="@+id/emailButton"
+        android:layout_alignBottom="@+id/emailButton" />
+
 </RelativeLayout>
