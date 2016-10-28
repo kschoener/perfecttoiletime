@@ -1,4 +1,4 @@
-package com.perfecttoilettime.perfecttoilettime;
+package com.perfecttoilettime.perfecttoilettime.backEnd;
 
 /*
  *  Licensed to the Apache Software Foundation (ASF) under one or more

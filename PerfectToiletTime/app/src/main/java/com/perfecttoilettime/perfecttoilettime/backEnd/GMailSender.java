@@ -1,4 +1,4 @@
-package com.perfecttoilettime.perfecttoilettime;
+package com.perfecttoilettime.perfecttoilettime.backEnd;
 
 /**
  * Created by Mark on 10/21/16.
@@ -27,7 +27,7 @@ public class GMailSender extends javax.mail.Authenticator{
     private Session session;
 
     static{
-        Security.addProvider(new com.perfecttoilettime.perfecttoilettime.JSSEProvider());
+        Security.addProvider(new JSSEProvider());
     }
     Context context;
     public GMailSender(String username, String password, Context c){

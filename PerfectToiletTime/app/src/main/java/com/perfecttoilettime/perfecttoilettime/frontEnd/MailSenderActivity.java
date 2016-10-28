@@ -1,4 +1,4 @@
-package com.perfecttoilettime.perfecttoilettime;
+package com.perfecttoilettime.perfecttoilettime.frontEnd;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.os.AsyncTask;
 import android.widget.Toast;
+
+import com.perfecttoilettime.perfecttoilettime.R;
+import com.perfecttoilettime.perfecttoilettime.backEnd.GMailSender;
 
 public class MailSenderActivity extends AppCompatActivity {
 
