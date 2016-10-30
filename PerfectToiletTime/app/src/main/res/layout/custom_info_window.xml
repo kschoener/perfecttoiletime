@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/neutralBackgroundColor">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bathroomName"
+        android:gravity="center|top"
+        android:text="First Floor Davis"
+        android:textColor="@color/fontColor"
+        android:textAlignment="center"
+        android:textSize="@dimen/titleFontSize"
+        android:layout_centerHorizontal="true"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:id="@+id/bathroomInfoSpacer"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/bathroomName"/>
+
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/bathroomDescription"-->
+        <!--android:layout_below="@+id/bathroomInfoSpacer"-->
+        <!--android:gravity="center"-->
+        <!--android:text="Located to the right of the front doors inside Davis"-->
+        <!--android:textColor="@color/fontColor"-->
+        <!--android:textAlignment="center"-->
+        <!--android:textSize="@dimen/infoFontSize"-->
+        <!--android:layout_centerHorizontal="true" />-->
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bathroomRating"
+        android:layout_below="@+id/bathroomInfoSpacer"
+        android:layout_centerHorizontal="true"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:stepSize=".01"
+        android:rating="2.50"/>
+
+</RelativeLayout>
