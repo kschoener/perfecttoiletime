@@ -22,11 +22,10 @@
         android:id="@+id/textView4" />
 
     <Button
-        android:text="Button"
+        android:text="Add Bathroom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/addBtn"
-        tools:text="Add Bathroom"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 

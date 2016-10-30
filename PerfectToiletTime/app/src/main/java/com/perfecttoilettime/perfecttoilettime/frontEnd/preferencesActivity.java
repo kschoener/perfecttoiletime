@@ -35,15 +35,14 @@ public class preferencesActivity extends AppCompatActivity {
         prefNames = new ArrayList<TextView>();
         setContentView(R.layout.activity_preferences);
 
-        for(int i =1; i <= 6; i++){
+        for(int i =1; i <= 3; i++){
             String barID = "seekBar";
             String textID = "result";
             String prefID = "pref";
-            if(i>1){
-                barID += i;
-                textID += i;
-                prefID += i;
-            }
+            barID += i;
+            textID += i;
+            prefID += i;
+
             int barResID = getResources().getIdentifier(barID, "id", getPackageName());
             int textResID = getResources().getIdentifier(textID, "id", getPackageName());
             int prefResID = getResources().getIdentifier(prefID, "id", getPackageName());
@@ -70,13 +69,13 @@ public class preferencesActivity extends AppCompatActivity {
             }
         });
 
-        Button addBathroomButton = (Button) findViewById(R.id.addBathroomButton);
-        addBathroomButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(preferencesActivity.this, AddBathroomActivity.class));
-            }
-        });
+//        Button addBathroomButton = (Button) findViewById(R.id.addBathroomButton);
+//        addBathroomButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(preferencesActivity.this, AddBathroomActivity.class));
+//            }
+//        });
 
         Button saveButton = (Button) findViewById(R.id.prefSaveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {

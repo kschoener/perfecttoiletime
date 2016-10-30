@@ -39,40 +39,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Random;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.lang.*;
-import static com.perfecttoilettime.perfecttoilettime.R.attr.title;
 
 //created by Kyle
 public class MapsActivity extends FragmentActivity implements
-        OnMapReadyCallback,
-        OnCameraMoveStartedListener, OnCameraMoveListener,
+        OnMapReadyCallback, OnMapLongClickListener,
+        OnCameraMoveStartedListener, OnCameraMoveListener, OnCameraMoveCanceledListener,
         OnInfoWindowLongClickListener,
         InfoWindowAdapter{
 
@@ -98,7 +84,8 @@ public class MapsActivity extends FragmentActivity implements
     private BitmapDescriptor genderColor;
     private boolean gettingBathrooms = false;
 
-    private int searchDistanceMiles = 100;
+    private int searchDistanceMiles = 100000;
+    private LatLngBounds bathroomListContains;
 
     private final LocationListener userLocationListener = new LocationListener() {
         @Override
@@ -182,6 +169,7 @@ public class MapsActivity extends FragmentActivity implements
             public void onClick(View v) {
 //                specifyBathroom(v);
                 findClosest(v);
+//                updateBounds();
             }
         });
 
@@ -241,6 +229,8 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnCameraMoveListener(this);
 
+        mMap.setOnMapLongClickListener(this);
+
 //        String locationProvider = LocationManager.NETWORK_PROVIDER;
         String locationProvider = LocationManager.GPS_PROVIDER;
         Location lastKnownLocation = mLocationManager.getLastKnownLocation(locationProvider);
@@ -251,37 +241,23 @@ public class MapsActivity extends FragmentActivity implements
         }
 //        mMap.addMarker(new MarkerOptions().position(mLocation).title(firstMarker));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, zoomlevel));
+        bathroomListContains = mMap.getProjection().getVisibleRegion().latLngBounds;
         LatLng center = mMap.getProjection().getVisibleRegion().latLngBounds.getCenter();
         startBathroomRetrieval(center.latitude, center.longitude);
         // Add a marker in Sydney and move the camera
 //        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
-//        mMap.addMarker(new MarkerOptions().position(mLocation).title("add bathroom"));
-//        mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
-//            @Override
-//            public void onMapLongClick(LatLng latLng) {
-//                    Intent intent1 = new Intent(getApplicationContext(), addinfoActivity.class);
-//                    intent1.putExtra("Add Restroom", title);
-//                    startActivity(intent1);
-//            }
-//
-//        });
     }
 
     private void addBathroomMarkers(String jsonArrayString) {
+        //add markers to the hash map
         try {
             JSONArray db = new JSONArray(jsonArrayString);
-            //todo look into cluster manager -- looks to suck with what i want to do
             for (int i = 0; i < db.length(); i++) {
                 try {
                     JSONObject temp = db.getJSONObject(i);
                     if (!bathroomIdtoJSONInfo.containsKey(temp.getInt("id"))) {
                         bathroomIdtoJSONInfo.put(temp.getInt("id"), temp);
-                        mMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(temp.getDouble("Latitude"), temp.getDouble("Longitude")))
-                                .icon(genderColor)
-                                .title("" + temp.getInt("id"))
-                        );
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -289,7 +265,28 @@ public class MapsActivity extends FragmentActivity implements
             }
         }catch(Exception e){
             e.printStackTrace();
+            Log.e("addbathroom", "The string that failed to load as a JSONArray is: "+jsonArrayString);
         }
+
+        //update markers
+//        mMap.clear();
+        for(int id : bathroomIdtoJSONInfo.keySet()){
+            try {
+                JSONObject temp = bathroomIdtoJSONInfo.get(id);
+                LatLng tempLatLng = new LatLng(temp.getDouble("Latitude"), temp.getDouble("Longitude"));
+                if(mMap.getProjection().getVisibleRegion().latLngBounds.contains(tempLatLng)) {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(tempLatLng)
+                            .icon(genderColor)
+                            .title("" + temp.getInt("id"))
+                    );
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                Log.e("bathroom", "could not convert from jsonobject to latlng");
+            }
+        }
+
     }
 
     public void menuLauncher(View view) {
@@ -299,80 +296,60 @@ public class MapsActivity extends FragmentActivity implements
 
     // Created by Steven
     public void findClosest(View view) {
+//        mLocation = new LatLng(43.002341, -78.788195);
         Intent intent = new Intent(this, MapsActivity.class);
-        mMap.clear();
-        LinkedHashMap<Double, Double> latLongLinkedHashMap = new LinkedHashMap();
+//        mMap.clear();
+//        LinkedHashMap<Double, Double> latLongLinkedHashMap = new LinkedHashMap();
         HashMap<Integer, Double> distancesHashMap = new HashMap();
         HashMap<Integer, Double> sortedDistancesHashMap = new HashMap();
-        HashMap<Integer, Double> latHashMap = new HashMap();
-        HashMap<Integer, Double> longHashMap = new HashMap();
         int id = 0;
-        Double distance = 0.0;
         Double latitude = 0.0;
         Double longitude = 0.0;
         String name = "";
-
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//        String locationProvider = LocationManager.GPS_PROVIDER;
-//        Location lastKnownLocation = mLocationManager.getLastKnownLocation(locationProvider);
-//        Double myLat = lastKnownLocation.getLatitude();
-//        Double myLong = lastKnownLocation.getLongitude();
         Double myLat = mLocation.latitude;
         Double myLong = mLocation.longitude;
 
         //Double myLat = 42.0;
         //Double myLong = 42.0;
 
-        try {
-            String locationUrlString = "http://socialgainz.com/Bumpr/PerfectToiletTime/GetAllLocations.php";
-            URL url = new URL(locationUrlString);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            String rs = readStream(in);
-            JSONArray locArray = new JSONArray(rs);
-
-            for (int i=0; i<locArray.length(); i++) {
-                id++;
-                JSONObject locObj = locArray.getJSONObject(i);
-                String latString = locObj.getString("Latitude");
-                String longString = locObj.getString("Longitude");
-                Double latDouble = Double.parseDouble(latString);
-                Double longDouble = Double.parseDouble(longString);
-                latHashMap.put(id, latDouble);
-                longHashMap.put(id, longDouble);
-                latLongLinkedHashMap.put(latDouble, longDouble);
-                distance = Math.sqrt(Math.pow(myLat-latDouble,2)+Math.pow(myLong-longDouble,2));
+        for(int currentId : bathroomIdtoJSONInfo.keySet()){
+            try {
+                double latDouble = bathroomIdtoJSONInfo.get(currentId).getDouble("Latitude");
+                double longDouble = bathroomIdtoJSONInfo.get(currentId).getDouble("Longitude");
+                double distance = Math.sqrt(Math.pow(myLat-latDouble,2)+Math.pow(myLong-longDouble,2));
                 distancesHashMap.put(id, distance);
+            }catch (Exception e){
+                e.printStackTrace();
             }
-            sortedDistancesHashMap = sortHashMapByValueLeastToGreatest(distancesHashMap);
-            HashMap.Entry<Integer, Double> entry = (HashMap.Entry<Integer, Double>) sortedDistancesHashMap.entrySet().iterator().next();
-            int closestBathroom = entry.getKey();
-            latitude = latHashMap.get(closestBathroom);
-            longitude = longHashMap.get(closestBathroom);
-            JSONObject locNameObj = locArray.getJSONObject(closestBathroom-1);
-            name = locNameObj.getString("name");
-
-        }catch(Exception e){
-            e.printStackTrace();
         }
-        mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name));
-        startActivity(intent);
+        sortedDistancesHashMap = sortHashMapByValueLeastToGreatest(distancesHashMap);
+        Iterator<HashMap.Entry<Integer, Double>> it = sortedDistancesHashMap.entrySet().iterator();
+        while(it.hasNext()) {
+            HashMap.Entry<Integer, Double> entry = it.next();
+            int closestBathroom = entry.getKey();
+            try {
+                latitude = bathroomIdtoJSONInfo.get(closestBathroom).getDouble("Latitude");
+                longitude = bathroomIdtoJSONInfo.get(closestBathroom).getDouble("Longitude");
+                name = bathroomIdtoJSONInfo.get(closestBathroom).getString("name");
+
+//            startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
+            }
+            break;
+        }
+//        mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), zoomlevel));
+
     }
+
 
 
     // Created by Steven
     public void findBest(View view) {
         Intent intent = new Intent(this, MapsActivity.class);
-        mMap.clear();
+//        mMap.clear();
         JSONArray locationArray = new JSONArray();
         int i;
         HashMap sortedBathroomsAvgRatingSumHashMap = new HashMap();
@@ -474,7 +451,7 @@ public class MapsActivity extends FragmentActivity implements
             JSONArray db = new JSONArray();
             JSONAsyncTask jsonBathrooms = new JSONAsyncTask(
                     "http://socialgainz.com/Bumpr/PerfectToiletTime/getLocation.php?Latitude=" + lat +
-                            "&Longitude=" + lon + "&Distance=" + searchDistanceMiles,
+                            "&Longitude=" + lon + "&Distance=" + (searchDistanceMiles*100),
                     this
             );
             jsonBathrooms.execute();
@@ -514,12 +491,11 @@ public class MapsActivity extends FragmentActivity implements
             ;
             //get average
             JSONObject ratings = getRatings(Integer.parseInt(marker.getTitle()));
-            float totalAverage = 0f;
             JSONObject averages = ratings.getJSONObject("average");
             double wifiAvg = averages.getDouble("Wifi");
             double cleanAvg = averages.getDouble("Clean");
             double busyAvg = averages.getDouble("Busy");
-            totalAverage = (float)((wifiAvg+cleanAvg+busyAvg)/3);
+            float totalAverage = (float)((wifiAvg+cleanAvg+busyAvg)/3);
             ((RatingBar)infoWindowView.findViewById(R.id.bathroomRating)).setRating(totalAverage);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -542,11 +518,9 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onInfoWindowLongClick(Marker marker) {
-        LatLng pos = marker.getPosition();
-        double[] put = {pos.latitude, pos.longitude};
-        Intent i = new Intent(this, AddBathroomActivity.class);
-        i.putExtra(AddBathroomActivity.addBathroomExtra, put);
-        startActivity(i);
+        //TODO: create full bathroom info page
+        //int bathroomID = Integer.parseInt(marker.getTitle()); //
+
     }
 
 
@@ -582,9 +556,34 @@ public class MapsActivity extends FragmentActivity implements
 
     private void updateBounds(){
         LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-        updateSearchDistance(bounds);
-        LatLng center = bounds.getCenter();
-        startBathroomRetrieval(center.latitude, center.longitude);
+        boolean needToLoad = false;
+        LatLng newNortheast = bathroomListContains.northeast;
+        LatLng newSouthwest = bathroomListContains.southwest;
+        if(bounds.northeast.longitude > newNortheast.longitude){
+            newNortheast = new LatLng(newNortheast.latitude, bounds.northeast.longitude);
+            needToLoad = true;
+        }
+        if(bounds.northeast.latitude > newNortheast.latitude){
+            newNortheast = new LatLng(bounds.northeast.latitude, newNortheast.longitude);
+            needToLoad = true;
+        }
+        if(bounds.southwest.longitude < newSouthwest.longitude){
+            newSouthwest = new LatLng(newSouthwest.latitude, bounds.southwest.longitude);
+            needToLoad = true;
+        }
+        if(bounds.southwest.latitude > newSouthwest.latitude){
+            newSouthwest = new LatLng(bounds.southwest.latitude, newSouthwest.longitude);
+            needToLoad = true;
+        }
+
+        if(needToLoad) {
+            bathroomListContains = new LatLngBounds(newSouthwest, newNortheast);
+            updateSearchDistance(bounds);
+            LatLng center = bounds.getCenter();
+            startBathroomRetrieval(center.latitude, center.longitude);
+        }else{
+            addBathroomMarkers("");
+        }
     }
 
     private void updateSearchDistance(LatLngBounds bounds){
@@ -597,7 +596,7 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onCameraMoveStarted(int reason) {
-
+        /*
         if (reason == OnCameraMoveStartedListener.REASON_GESTURE) {
             //this works
             updateBounds();
@@ -612,15 +611,26 @@ public class MapsActivity extends FragmentActivity implements
         } else if (reason == OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION) {
 //            Toast.makeText(this, "The app moved the camera.", Toast.LENGTH_SHORT).show();
         }
+        */
+    }
+
+    @Override
+    public void onMapLongClick(LatLng pos) {
+        double[] put = {pos.latitude, pos.longitude};
+        Intent i = new Intent(this, AddBathroomActivity.class);
+        i.putExtra(AddBathroomActivity.addBathroomExtra, put);
+        startActivity(i);
     }
 
     @Override
     public void onCameraMove() {
-        updateBounds();
+        //updateBounds();
     }
 
-
-
+    @Override
+    public void onCameraMoveCanceled() {
+        updateBounds();
+    }
 
 
     public class JSONAsyncTask extends AsyncTask<Void, Void, String> {
