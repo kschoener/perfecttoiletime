@@ -1,0 +1,18 @@
+Date: October 20, 2016
+meeting_type: group
+attendance: [kylescho, markabid, erselig, swilser, cwang39]
+absent: []
+excused_absences: [
+  {}
+  ]
+task_progress: [
+  {ubit: markabid, progress: Email working without confirmation.},
+  {ubit: erselig, progress: Switching database provider. Working on adding bathrooms to the map from the database.},
+  {ubit: kylescho, progress: Completed Pinch-to-Zoom functionality.},
+  {ubit: cwang39, progress: In progress},
+  {ubit: swilser, progress: Completed front-end gui tasks; still working on the algorithms.}
+  ]
+issues: [
+  ]
+Notes:  | 
+  
