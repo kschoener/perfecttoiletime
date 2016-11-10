@@ -1,13 +1,13 @@
 package com.perfecttoilettime.perfecttoilettime.frontEnd;
 
 import android.content.Intent;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.perfecttoilettime.perfecttoilettime.R;
 
@@ -17,14 +17,17 @@ public class preferencesActivity extends AppCompatActivity {
     private ArrayList<SeekBar> bars;
     private ArrayList<TextView> valueKeepers;
     private ArrayList<TextView> prefNames;
-    public static final String extraKey = "prefs";
+    public static final String preferenceExtraKey = "prefs";
+
+    private int gender = genderActivity.maleValue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int[] prevPref = null;
-        Intent startingIntent =getIntent();
-        if(startingIntent.getExtras().containsKey(extraKey)){
-            prevPref = startingIntent.getExtras().getIntArray(extraKey);
+        Intent startIntent = getIntent();
+
+        if(startIntent.getExtras().containsKey(preferenceExtraKey)){
+            prevPref = startIntent.getExtras().getIntArray(preferenceExtraKey);
         }
 
         bars = new ArrayList<SeekBar>();
@@ -32,15 +35,14 @@ public class preferencesActivity extends AppCompatActivity {
         prefNames = new ArrayList<TextView>();
         setContentView(R.layout.activity_preferences);
 
-        for(int i =1; i <= 6; i++){
+        for(int i =1; i <= 3; i++){
             String barID = "seekBar";
             String textID = "result";
             String prefID = "pref";
-            if(i>1){
-                barID += i;
-                textID += i;
-                prefID += i;
-            }
+            barID += i;
+            textID += i;
+            prefID += i;
+
             int barResID = getResources().getIdentifier(barID, "id", getPackageName());
             int textResID = getResources().getIdentifier(textID, "id", getPackageName());
             int prefResID = getResources().getIdentifier(prefID, "id", getPackageName());
@@ -59,6 +61,22 @@ public class preferencesActivity extends AppCompatActivity {
             prefNames.add((TextView)findViewById(prefResID));
         }
 
+        Button emailButton = (Button) findViewById(R.id.emailButton);
+        emailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(preferencesActivity.this, MailSenderActivity.class));
+            }
+        });
+
+//        Button addBathroomButton = (Button) findViewById(R.id.addBathroomButton);
+//        addBathroomButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(preferencesActivity.this, AddBathroomActivity.class));
+//            }
+//        });
+
         Button saveButton = (Button) findViewById(R.id.prefSaveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,10 +88,25 @@ public class preferencesActivity extends AppCompatActivity {
                     extras[i] = bars.get(i).getProgress();
 //                    startMap.putExtra((String) prefNames.get(i).getText(), bars.get(i).getProgress());
                 }
-                startMap.putExtra(extraKey, extras);
+                startMap.putExtra(preferenceExtraKey, extras);
+                startMap.putExtra(genderActivity.genderExtraKey, gender);
                 startActivity(startMap);
             }
         });
+
+        if(startIntent.getExtras().containsKey(genderActivity.genderExtraKey)){
+            gender = startIntent.getExtras().getInt(genderActivity.genderExtraKey);
+            switch (gender){
+                case genderActivity.maleValue:
+                    (findViewById(R.id.activity_preferences)).setBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.maleBackgroundColor, null));
+                    break;
+                case genderActivity.femaleValue:
+                    (findViewById(R.id.activity_preferences)).setBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.femaleBackgroundColor, null));
+                    break;
+            }
+        }
     }
 
     private SeekBar.OnSeekBarChangeListener mySeekListener = new SeekBar.OnSeekBarChangeListener(){

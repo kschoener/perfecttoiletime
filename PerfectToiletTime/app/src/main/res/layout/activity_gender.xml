@@ -42,7 +42,7 @@
         android:layout_alignEnd="@+id/imageButton" />
 
     <TextView
-        android:text="Famle"
+        android:text="Female"
         android:textSize="24dp"
         android:textColor="#253275"
         android:textStyle="bold"

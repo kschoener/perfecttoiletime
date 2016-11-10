@@ -1,0 +1,18 @@
+Date: October 19, 2016
+meeting_type: ta
+attendance: [kylescho, markabid, erselig, swilser, cwang39]
+absent: []
+excused_absences: [
+  {}
+  ]
+task_progress: [
+  {ubit: markabid, progress: None.},
+  {ubit: erselig, progress: Switching database provider. Working on adding bathrooms to the map from the database.},
+  {ubit: kylescho, progress: Completed Pinch-to-Zoom functionality.},
+  {ubit: cwang39, progress: None},
+  {ubit: swilser, progress: Completed front-end gui tasks; still working on the algorithms.}
+  ]
+issues: [
+  ]
+Notes:  | 
+  Ted was having issues with the firebase database, so we've decided to switch to either his friend's server or AWS. We all plan to have our functionality completed by Monday so that we can spend the remaining week merging, putting everything together, and completing the YouTube video.

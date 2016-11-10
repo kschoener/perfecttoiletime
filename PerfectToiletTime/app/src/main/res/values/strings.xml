@@ -7,4 +7,60 @@
     <string name="bestLauncher">Best</string>
     <string name="closestLauncher">Closest</string>
     <string name="title_activity_testmapsactivity">Map</string>
+
+    <string-array name="buildingFloor">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="problems">
+        <item>No Toilet Paper</item>
+        <item>No Paper Towel</item>
+        <item>No Soap</item>
+        <item>Toilet Not Working</item>
+        <item>Dirty Toilet</item>
+        <item>Dirty Sink</item>
+        <item>Leak/Flooding</item>
+    </string-array>
+
+    <string-array name="buildingNames">
+        <item>Alfiero Center</item>
+        <item>Alumni Arena</item>
+        <item>Baird Hall</item>
+        <item>Baldy Hall</item>
+        <item>Bissell Hall</item>
+        <item>Bonner Hall</item>
+        <item>Capen Hall</item>
+        <item>Center for the Arts</item>
+        <item>Clemens Hall</item>
+        <item>Cooke Hall</item>
+        <item>Davis Hall</item>
+        <item>Fronczack Hall</item>
+        <item>Furnas Hall</item>
+        <item>Hochstetter Hall</item>
+        <item>Jacobs Management Center</item>
+        <item>Jarvis Hall</item>
+        <item>Ketter Hall</item>
+        <item>Knox Lecture Hall</item>
+        <item>Lockwood Memorial Library</item>
+        <item>Mathematics Building</item>
+        <item>Millard Fillmore Academic Center</item>
+        <item>Natural Sciences Complex</item>
+        <item>Norton Hall</item>
+        <item>OBrian Hall</item>
+        <item>Park Hall</item>
+        <item>Roosevelt Hall</item>
+        <item>Slee Hall</item>
+        <item>Student Union</item>
+        <item>Talbert Hall</item>
+    </string-array>
 </resources>
+

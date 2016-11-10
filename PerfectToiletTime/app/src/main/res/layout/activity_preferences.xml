@@ -11,132 +11,60 @@
     tools:context="com.perfecttoilettime.perfecttoilettime.frontEnd.preferencesActivity"
     android:background="@color/neutralBackgroundColor">
 
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="PREFERENCE SLIDERS"-->
-        <!--android:layout_marginTop="171dp"-->
-        <!--android:id="@+id/textView"-->
-        <!--android:layout_below="@+id/imageButton"-->
-        <!--android:layout_centerHorizontal="true" />-->
-
     <TextView
-        android:text="Flush"
+        android:text="Wifi"
         android:textSize="24dp"
         android:textColor="#253275"
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/pref3"
-        android:layout_below="@+id/pref2"
-        android:layout_alignStart="@+id/pref2"
-        android:layout_marginTop="41dp" />
+        android:id="@+id/pref1"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="46dp"/>
 
     <TextView
         android:text="Space"
         android:textSize="24dp"
         android:textColor="#253275"
         android:textStyle="bold"
+        android:id="@+id/pref2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/pref3"
-        android:layout_alignStart="@+id/pref3"
+        android:layout_below="@+id/pref1"
+        android:layout_alignStart="@+id/pref1"
+        android:layout_marginTop="46dp" />
+
+    <TextView
+        android:text="Cleanliness"
+        android:textSize="24dp"
+        android:textColor="#253275"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pref2"
+        android:layout_alignStart="@+id/pref2"
         android:layout_marginTop="46dp"
-        android:id="@+id/pref4" />
+        android:id="@+id/pref3" />
 
-    <TextView
-        android:text="Mirror"
-        android:textSize="24dp"
-        android:textColor="#253275"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/pref4"
-        android:layout_alignStart="@+id/pref4"
-        android:layout_marginTop="44dp"
-        android:id="@+id/pref5" />
 
-    <TextView
-        android:text="Faucet"
-        android:textSize="24dp"
-        android:textColor="#253275"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/pref6"
-        android:layout_marginTop="36dp"
-        android:layout_below="@+id/pref5"
-        android:layout_alignStart="@+id/pref5" />
 
     <SeekBar
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:max="10"
         android:progress="2"
-        android:layout_above="@+id/pref4"
-        android:layout_alignStart="@+id/seekBar2"
-        android:id="@+id/seekBar3" />
-
-    <SeekBar
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:max="10"
-        android:progress="2"
-        android:layout_above="@+id/pref5"
-        android:layout_alignStart="@+id/seekBar3"
-        android:id="@+id/seekBar4" />
-
-    <SeekBar
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:max="10"
-        android:progress="2"
-        android:id="@+id/seekBar5"
-        android:layout_alignTop="@+id/pref5"
-        android:layout_alignStart="@+id/seekBar4" />
-
-    <SeekBar
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:max="10"
-        android:progress="2"
-        android:id="@+id/seekBar"
+        android:id="@+id/seekBar1"
         android:layout_above="@+id/pref2"
         android:layout_alignParentEnd="true" />
 
     <TextView
-        android:text="WI-fi"
-        android:textSize="24dp"
-        android:textColor="#253275"
-        android:textStyle="bold"
+        android:text="5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/pref2"
-        android:layout_marginTop="39dp"
-        android:layout_below="@+id/pref"
-        android:layout_alignStart="@+id/pref" />
+        android:id="@+id/result1"
+        android:layout_below="@+id/seekBar1"
+        android:layout_alignStart="@+id/result2" />
 
-    <TextView
-        android:text="Cleaness"
-        android:textSize="24dp"
-        android:textColor="#253275"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:id="@+id/pref"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="26dp" />
-
-    <Button
-        android:text="SAVE"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/prefSaveButton"
-        android:layout_below="@+id/pref6"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="11dp" />
 
     <SeekBar
         android:layout_width="200dp"
@@ -148,33 +76,6 @@
         android:layout_alignParentEnd="true" />
 
 
-
-    <SeekBar
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:max="10"
-        android:progress="2"
-        android:id="@+id/seekBar6"
-        android:layout_alignTop="@+id/pref6"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:text="5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/seekBar4"
-        android:layout_alignStart="@+id/result3"
-        android:id="@+id/result4" />
-
-    <TextView
-        android:text="5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/result5"
-        android:layout_above="@+id/pref6"
-        android:layout_alignParentEnd="true"
-        android:layout_alignStart="@+id/result4" />
-
     <TextView
         android:text="5"
         android:layout_width="wrap_content"
@@ -184,28 +85,40 @@
         android:layout_below="@+id/seekBar2"
         android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:text="5"
-        android:layout_width="wrap_content"
+    <SeekBar
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:id="@+id/result"
-        android:layout_below="@+id/seekBar"
-        android:layout_alignStart="@+id/result2" />
+        android:max="10"
+        android:progress="2"
+        android:id="@+id/seekBar3"
+        android:layout_alignTop="@+id/pref3"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:text="5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/result3"
+        android:layout_marginEnd="11dp"
         android:layout_below="@+id/seekBar3"
-        android:layout_alignStart="@+id/result2" />
+        android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:text="5"
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/prefSaveButton"
+        android:text="SAVE"
+        android:layout_below="@+id/pref3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="46dp"/>
+
+    <Button
+        android:text="Report A Problem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/result6"
-        android:layout_above="@+id/prefSaveButton"
-        android:layout_alignStart="@+id/result5" />
+        android:id="@+id/emailButton"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>
