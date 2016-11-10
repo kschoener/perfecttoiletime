@@ -32,7 +32,7 @@ public class RatingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rating);
         for(int i =1; i <= 4; i++){
             String barID = "ratingBar";
-            String textID = "";
+            String textID = "text";
         }
     }
 }
