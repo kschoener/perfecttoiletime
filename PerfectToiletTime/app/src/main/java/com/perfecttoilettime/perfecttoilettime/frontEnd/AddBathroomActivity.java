@@ -44,6 +44,7 @@ public class AddBathroomActivity extends AppCompatActivity {
                     String urlString = "http://socialgainz.com/Bumpr/PerfectToiletTime/insertBathroom.php?longitude=" + longitude + "&latitude=" + latitude + "&name=" + name + "&description=" + description + "";
                     final String urlString1 = urlString.replaceAll(" ", "%20");
                     final WebView view = (WebView) findViewById(R.id.connection);
+                    view.getSettings().setDomStorageEnabled(true);
                     view.post(new Runnable() {
                         @Override
                         public void run() {

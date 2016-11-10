@@ -617,6 +617,7 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onMapLongClick(LatLng pos) {
         double[] put = {pos.latitude, pos.longitude};
+        Log.d("WTFLongClick", "Click lat: "+pos.latitude+", Click lon: "+pos.longitude);
         Intent i = new Intent(this, AddBathroomActivity.class);
         i.putExtra(AddBathroomActivity.addBathroomExtra, put);
         startActivity(i);
