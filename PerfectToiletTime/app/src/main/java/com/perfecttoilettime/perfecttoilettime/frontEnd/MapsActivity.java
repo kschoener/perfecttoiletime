@@ -59,7 +59,7 @@ import java.lang.*;
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback, OnMapLongClickListener,
         OnCameraMoveStartedListener, OnCameraMoveListener, OnCameraMoveCanceledListener,
-        OnInfoWindowLongClickListener,
+        OnInfoWindowLongClickListener, OnInfoWindowClickListener,
         InfoWindowAdapter{
 
     private GoogleMap mMap;
@@ -500,8 +500,6 @@ public class MapsActivity extends FragmentActivity implements
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
         return infoWindowView;
     }
     //for InfoWindowAdapter
@@ -520,10 +518,14 @@ public class MapsActivity extends FragmentActivity implements
     public void onInfoWindowLongClick(Marker marker) {
         //TODO: create full bathroom info page
         //int bathroomID = Integer.parseInt(marker.getTitle()); //
-
     }
 
-
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        //for purpose of favorites button but can also be used for info page instead of long click
+        Intent intent = new Intent(this, FullInfoPage.class);
+        startActivity(intent);
+    }
 
     public HashMap<Integer, Double> sortHashMapByValueLeastToGreatest(HashMap<Integer, Double> unsortedHashMap) {
         List<HashMap.Entry<Integer, Double>> list = new LinkedList<HashMap.Entry<Integer, Double>>(unsortedHashMap.entrySet());
@@ -698,7 +700,6 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
     //end of async task class
-
 
     //exit if the app was not given location permissions
     @Override
