@@ -107,6 +107,15 @@ public class preferencesActivity extends AppCompatActivity {
                     break;
             }
         }
+
+        Button favoritesList = (Button) findViewById(R.id.favoritesListButton);
+        favoritesList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(preferencesActivity.this, FavoritesList.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private SeekBar.OnSeekBarChangeListener mySeekListener = new SeekBar.OnSeekBarChangeListener(){

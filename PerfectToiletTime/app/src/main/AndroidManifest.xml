@@ -54,7 +54,8 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".frontEnd.MenuActivity" />
-        <activity android:name=".frontEnd.FullInfoPage"></activity>
+        <activity android:name=".frontEnd.FullInfoPage" />
+        <activity android:name=".frontEnd.FavoritesList"></activity>
     </application>
 
 </manifest>

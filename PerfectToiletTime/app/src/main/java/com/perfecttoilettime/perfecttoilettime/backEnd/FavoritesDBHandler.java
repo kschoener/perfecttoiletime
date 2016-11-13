@@ -2,6 +2,7 @@ package com.perfecttoilettime.perfecttoilettime.backEnd;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -51,5 +52,23 @@ public class FavoritesDBHandler extends SQLiteOpenHelper {
     public void deleteBathroom(String bathroomName){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_BATHROOMS + " WHERE " + COLUMN_BATHROOMNAME + "=\"" + bathroomName + "\";");
+    }
+    //will print all items from db to single string
+    public String printDB(){
+        String dbString = "";
+        SQLiteDatabase db = getWritableDatabase();
+        String  query = "SELECT * FROM " + TABLE_BATHROOMS + " WHERE 1";
+
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        while(!cursor.isAfterLast()){
+            if(cursor.getString(cursor.getColumnIndex("name")) != null){
+                dbString += cursor.getString(cursor.getColumnIndex("name"));
+                dbString += "\n";
+            }
+        }
+        db.close();
+        return dbString;
     }
 }
