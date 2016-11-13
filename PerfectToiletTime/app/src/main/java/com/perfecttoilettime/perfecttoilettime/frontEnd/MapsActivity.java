@@ -479,6 +479,7 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     //for InfoWindowAdapter
+    String bname;
     @Override
     public View getInfoWindow(Marker marker) {
         //set up infoWindowView and return it
@@ -489,6 +490,8 @@ public class MapsActivity extends FragmentActivity implements
                             Integer.parseInt(marker.getTitle())).getString("name")
                     )
             ;
+            bname = bathroomIdtoJSONInfo.get(
+                    Integer.parseInt(marker.getTitle())).getString("name");
             //get average
             JSONObject ratings = getRatings(Integer.parseInt(marker.getTitle()));
             JSONObject averages = ratings.getJSONObject("average");
@@ -524,6 +527,9 @@ public class MapsActivity extends FragmentActivity implements
     public void onInfoWindowClick(Marker marker) {
         //for purpose of favorites button but can also be used for info page instead of long click
         Intent intent = new Intent(this, FullInfoPage.class);
+        intent.putExtra("name", bname);
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
         startActivity(intent);
     }
 
@@ -615,10 +621,13 @@ public class MapsActivity extends FragmentActivity implements
         }
         */
     }
-
+    double latitude;
+    double longitude;
     @Override
     public void onMapLongClick(LatLng pos) {
         double[] put = {pos.latitude, pos.longitude};
+        latitude = pos.latitude;
+        longitude = pos.longitude;
         Log.d("WTFLongClick", "Click lat: "+pos.latitude+", Click lon: "+pos.longitude);
         Intent i = new Intent(this, AddBathroomActivity.class);
         i.putExtra(AddBathroomActivity.addBathroomExtra, put);

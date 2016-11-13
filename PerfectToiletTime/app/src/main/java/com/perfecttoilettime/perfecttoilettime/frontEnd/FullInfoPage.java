@@ -1,5 +1,6 @@
 package com.perfecttoilettime.perfecttoilettime.frontEnd;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +14,6 @@ public class FullInfoPage extends AppCompatActivity {
     ImageButton favorite;
     FavoritesDBHandler handler;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +24,19 @@ public class FullInfoPage extends AppCompatActivity {
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bathroom bathroom = new Bathroom();
+                Intent intent = getIntent();
+                String name = intent.getExtras().getString("name");
+                double latitude = intent.getExtras().getDouble("latitude");
+                double longitude = intent.getExtras().getDouble("longitude");
+                //convert double to string
+                String stringLat = String.valueOf(latitude);
+                String stringLong = String.valueOf(longitude);
+                bathroom.setBathroomName(name);
+                bathroom.setLatitude(stringLat);
+                bathroom.setLongitude(stringLong);
 
+                handler.addBathroom(bathroom);
             }
         });
     }
