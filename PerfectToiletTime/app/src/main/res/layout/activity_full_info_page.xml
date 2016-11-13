@@ -12,12 +12,23 @@
     tools:context="com.perfecttoilettime.perfecttoilettime.frontEnd.FullInfoPage"
     android:background="@color/neutralBackgroundColor">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bathroomName"
+        android:gravity="center|top"
+        android:text="First Floor Davis"
+        android:textColor="@color/fontColor"
+        android:textAlignment="center"
+        android:textSize="@dimen/titleFontSize"
+        android:layout_centerHorizontal="true"/>
+
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/btn_star_big_off"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="152dp"
-        android:id="@+id/imageButton3" />
+        android:id="@+id/favButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="70dp" />
 </RelativeLayout>
