@@ -78,22 +78,4 @@ public class FavoritesDBHandler extends SQLiteOpenHelper {
         return List;
     }
 
-//    public List<String> getAllBathrooms() {
-//        List<String> List = new ArrayList<String>();
-//        // Select All Query
-//        String selectQuery = "SELECT * FROM " + TABLE_BATHROOMS;
-//        SQLiteDatabase db = getWritableDatabase();
-//        Cursor cursor = db.rawQuery(selectQuery, null);
-//
-//        // looping through all rows and adding to list
-//        if (cursor.moveToFirst()) {
-//            do {
-//                System.out.println(cursor.getString((1)));
-//                if(cursor.getString(1) != null) {
-//                    List.add(cursor.getString(1));
-//                }
-//            } while (cursor.moveToNext());
-//        }
-//        return List;
-//    }
 }
