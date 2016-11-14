@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
 
 import com.perfecttoilettime.perfecttoilettime.R;
 import com.perfecttoilettime.perfecttoilettime.backEnd.FavoritesDBHandler;
@@ -29,13 +31,14 @@ public class FullInfoPage extends AppCompatActivity {
                 String name = intent.getExtras().getString("name");
                 double latitude = intent.getExtras().getDouble("latitude");
                 double longitude = intent.getExtras().getDouble("longitude");
-                //convert double to string
                 String stringLat = String.valueOf(latitude);
                 String stringLong = String.valueOf(longitude);
+                System.out.println(name);
+                System.out.println(stringLat);
+                System.out.println(stringLong);
                 bathroom.setBathroomName(name);
                 bathroom.setLatitude(stringLat);
                 bathroom.setLongitude(stringLong);
-
                 handler.addBathroom(bathroom);
             }
         });

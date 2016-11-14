@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.perfecttoilettime.perfecttoilettime.frontEnd.Bathroom;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Mark on 11/12/16.
  */
@@ -27,11 +30,11 @@ public class FavoritesDBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query = "CREATE TABLE" + TABLE_BATHROOMS + "(" +
-                COLUMN_BATHROOMNAME + " TEXT " +
-                COLUMN_LATITUDE + " TEXT " +
+        String query = "CREATE TABLE " + TABLE_BATHROOMS + "(" +
+                COLUMN_BATHROOMNAME + " TEXT, " +
+                COLUMN_LATITUDE + " TEXT, " +
                 COLUMN_LONGITUDE + " TEXT " +
-                ")";
+                ");";
         db.execSQL(query);
     }
 
@@ -54,7 +57,8 @@ public class FavoritesDBHandler extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_BATHROOMS + " WHERE " + COLUMN_BATHROOMNAME + "=\"" + bathroomName + "\";");
     }
     //will print all items from db to single string
-    public String printDB(){
+    public List<String> getAllBathrooms(){
+        List<String> List = new ArrayList<String>();
         String dbString = "";
         SQLiteDatabase db = getWritableDatabase();
         String  query = "SELECT * FROM " + TABLE_BATHROOMS + " WHERE 1";
@@ -64,11 +68,32 @@ public class FavoritesDBHandler extends SQLiteOpenHelper {
 
         while(!cursor.isAfterLast()){
             if(cursor.getString(cursor.getColumnIndex("name")) != null){
-                dbString += cursor.getString(cursor.getColumnIndex("name"));
-                dbString += "\n";
+                dbString = cursor.getString(cursor.getColumnIndex("name"));
+                List.add(dbString);
+                cursor.moveToNext();
             }
         }
+        cursor.close();
         db.close();
-        return dbString;
+        return List;
     }
+
+//    public List<String> getAllBathrooms() {
+//        List<String> List = new ArrayList<String>();
+//        // Select All Query
+//        String selectQuery = "SELECT * FROM " + TABLE_BATHROOMS;
+//        SQLiteDatabase db = getWritableDatabase();
+//        Cursor cursor = db.rawQuery(selectQuery, null);
+//
+//        // looping through all rows and adding to list
+//        if (cursor.moveToFirst()) {
+//            do {
+//                System.out.println(cursor.getString((1)));
+//                if(cursor.getString(1) != null) {
+//                    List.add(cursor.getString(1));
+//                }
+//            } while (cursor.moveToNext());
+//        }
+//        return List;
+//    }
 }

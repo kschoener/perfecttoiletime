@@ -521,6 +521,11 @@ public class MapsActivity extends FragmentActivity implements
     public void onInfoWindowLongClick(Marker marker) {
         //TODO: create full bathroom info page
         //int bathroomID = Integer.parseInt(marker.getTitle()); //
+        Intent intent = new Intent(this, FullInfoPage.class);
+        intent.putExtra("name", bname);
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
+        startActivity(intent);
     }
 
     @Override
