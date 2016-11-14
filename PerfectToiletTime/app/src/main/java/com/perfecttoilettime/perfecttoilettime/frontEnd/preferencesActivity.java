@@ -94,7 +94,7 @@ public class preferencesActivity extends AppCompatActivity {
             }
         });
 
-        if(startIntent.getExtras().containsKey(genderActivity.genderExtraKey)){
+            if(startIntent.getExtras().containsKey(genderActivity.genderExtraKey)){
             gender = startIntent.getExtras().getInt(genderActivity.genderExtraKey);
             switch (gender){
                 case genderActivity.maleValue:
