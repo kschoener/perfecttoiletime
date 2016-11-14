@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.perfecttoilettime.perfecttoilettime.R;
 import com.perfecttoilettime.perfecttoilettime.backEnd.FavoritesDBHandler;
@@ -41,6 +42,7 @@ public class FullInfoPage extends AppCompatActivity {
                 bathroom.setLatitude(stringLat);
                 bathroom.setLongitude(stringLong);
                 handler.addBathroom(bathroom);
+                Toast.makeText(FullInfoPage.this, name + " added to favorites!",Toast.LENGTH_SHORT).show();
             }
         });
     }
