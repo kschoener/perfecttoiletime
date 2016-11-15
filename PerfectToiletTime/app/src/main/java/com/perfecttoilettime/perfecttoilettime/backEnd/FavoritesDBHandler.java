@@ -56,7 +56,7 @@ public class FavoritesDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_BATHROOMS + " WHERE " + COLUMN_BATHROOMNAME + "=\"" + bathroomName + "\";");
     }
-    //will print all items from db to single string
+    //will add all items in db to list of strings
     public List<String> getAllBathrooms(){
         List<String> List = new ArrayList<String>();
         String dbString = "";

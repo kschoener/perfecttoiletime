@@ -34,15 +34,15 @@ public class FullInfoPage extends AppCompatActivity {
         final double longitude = intent.getExtras().getDouble("longitude");
         bathroomName.setText(name);
         favorite = (ImageButton) findViewById(R.id.favButton);
-        //final Drawable onStar = getResources().getDrawable(android.R.drawable.btn_star_big_on);
-        //final Drawable offStar = getResources().getDrawable(android.R.drawable.btn_star_big_off);
+        final Drawable onStar = getResources().getDrawable(android.R.drawable.btn_star_big_on);
+        final Drawable offStar = getResources().getDrawable(android.R.drawable.btn_star_big_off);
         handler = new FavoritesDBHandler(this, null, null, 1);
         final boolean isAdded = handler.checkIfBathroomInDatabase(name);
         if(isAdded){
-           // favorite.setImageDrawable(onStar);
+            favorite.setImageDrawable(onStar);
         }
         else {
-
+            //do nothing
         }
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,15 +56,13 @@ public class FullInfoPage extends AppCompatActivity {
                 bathroom.setLongitude(stringLong);
                 if(isInDB){
                     handler.deleteBathroom(name);
-                 //   favorite.setImageDrawable(offStar);
-                    Toast.makeText(FullInfoPage.this, name + " has been deleted from favorites!",Toast.LENGTH_SHORT).show();
-                    //isInDB = false;
+                    favorite.setImageDrawable(offStar);
+                    Toast.makeText(FullInfoPage.this, name + " has been removed from favorites!",Toast.LENGTH_SHORT).show();
                 }
                 else {
                     handler.addBathroom(bathroom);
-                  //  favorite.setImageDrawable(onStar);
+                    favorite.setImageDrawable(onStar);
                     Toast.makeText(FullInfoPage.this, name + " added to favorites!",Toast.LENGTH_SHORT).show();
-                    //isInDB = true;
                 }
             }
         });
