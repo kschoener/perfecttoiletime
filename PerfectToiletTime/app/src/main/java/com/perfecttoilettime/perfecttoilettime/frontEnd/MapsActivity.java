@@ -480,6 +480,8 @@ public class MapsActivity extends FragmentActivity implements
 
     //for InfoWindowAdapter
     String bname;
+    double latitude;
+    double longitude;
     @Override
     public View getInfoWindow(Marker marker) {
         //set up infoWindowView and return it
@@ -626,13 +628,10 @@ public class MapsActivity extends FragmentActivity implements
         }
         */
     }
-    double latitude;
-    double longitude;
+
     @Override
     public void onMapLongClick(LatLng pos) {
         double[] put = {pos.latitude, pos.longitude};
-        latitude = pos.latitude;
-        longitude = pos.longitude;
         Log.d("WTFLongClick", "Click lat: "+pos.latitude+", Click lon: "+pos.longitude);
         Intent i = new Intent(this, AddBathroomActivity.class);
         i.putExtra(AddBathroomActivity.addBathroomExtra, put);

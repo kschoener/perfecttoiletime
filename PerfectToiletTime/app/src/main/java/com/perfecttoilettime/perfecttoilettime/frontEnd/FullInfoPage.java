@@ -3,6 +3,7 @@ package com.perfecttoilettime.perfecttoilettime.frontEnd;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +21,7 @@ public class FullInfoPage extends AppCompatActivity {
     ImageButton favorite;
     FavoritesDBHandler handler;
     TextView bathroomName;
+    private int gender = genderActivity.maleValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
