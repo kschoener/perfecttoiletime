@@ -78,4 +78,22 @@ public class FavoritesDBHandler extends SQLiteOpenHelper {
         return List;
     }
 
+    public boolean checkIfBathroomInDatabase(String s){
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_BATHROOMS + " WHERE 1";
+
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        while(!cursor.isAfterLast()){
+            if((cursor.getString(cursor.getColumnIndex("name")).equals(s))){
+                return true;
+            }
+            else{
+                cursor.moveToNext();
+            }
+        }
+        return false;
+    }
+
 }
