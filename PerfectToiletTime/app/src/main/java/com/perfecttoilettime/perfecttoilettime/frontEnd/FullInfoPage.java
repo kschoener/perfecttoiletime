@@ -18,7 +18,6 @@ import com.perfecttoilettime.perfecttoilettime.backEnd.FavoritesDBHandler;
 public class FullInfoPage extends AppCompatActivity {
 
     ImageButton favorite;
-    ImageButton favoriteYellow;
     FavoritesDBHandler handler;
     TextView bathroomName;
 

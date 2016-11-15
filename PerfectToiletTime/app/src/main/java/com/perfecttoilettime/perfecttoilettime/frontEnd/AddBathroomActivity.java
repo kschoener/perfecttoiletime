@@ -41,7 +41,7 @@ public class AddBathroomActivity extends AppCompatActivity {
                     String description = bathroomDescription.getText().toString(); //description of bathroom from text field
                     String longitude = "" + coords[1]; //longitude of bathroom location(always empty for now until figure out how to implement this)
                     String latitude = "" + coords[0]; //latitude of bathroom location(always empty for now until figure out how to implement this)
-                    String urlString = "http://socialgainz.com/Bumpr/PerfectToiletTime/insertBathroom.php?longitude=" + longitude + "&latitude=" + latitude + "&name=" + name + "&description=" + description + "";
+                    String urlString = "http://ec2-54-71-248-37.us-west-2.compute.amazonaws.com/home/PerfectToiletTime/insertBathroom.php?longitude=" + longitude + "&latitude=" + latitude + "&name=" + name + "&description=" + description + "";
                     final String urlString1 = urlString.replaceAll(" ", "%20");
                     final WebView view = (WebView) findViewById(R.id.connection);
                     view.getSettings().setDomStorageEnabled(true);

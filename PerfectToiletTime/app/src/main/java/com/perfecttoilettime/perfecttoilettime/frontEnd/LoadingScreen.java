@@ -65,7 +65,7 @@ public class LoadingScreen extends AppCompatActivity {
             SecureRandom random = new SecureRandom();
             String rand = new BigInteger(130, random).toString(32);
             Log.d("myTag",rand);
-            String urlString ="http://socialgainz.com/Bumpr/PerfectToiletTime/isUserEntered.php?userID=" + androidID + "&rand=" + rand;
+            String urlString ="http://ec2-54-71-248-37.us-west-2.compute.amazonaws.com/home/PerfectToiletTime/isUserEntered.php?userID=" + androidID + "&rand=" + rand;
             final String urlString1 = urlString.replaceAll(" ", "%20");
             URL url = new URL(urlString1);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -102,7 +102,7 @@ public class LoadingScreen extends AppCompatActivity {
                     SecureRandom random = new SecureRandom();
                     String rand = new BigInteger(130, random).toString(32);
                     //URL needs random string to prevent output caching
-                    String urlString ="http://socialgainz.com/Bumpr/PerfectToiletTime/isUserEntered.php?userID=" + androidID + "&rand=" + rand;
+                    String urlString ="http://ec2-54-71-248-37.us-west-2.compute.amazonaws.com/home/PerfectToiletTime/isUserEntered.php?userID=" + androidID + "&rand=" + rand;
                     final String urlString1 = urlString.replaceAll(" ", "%20");
                     URL url = new URL(urlString1);
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();

@@ -362,7 +362,7 @@ public class MapsActivity extends FragmentActivity implements
         // Makes a JSON Array of all the bathrooms.
         try {
             //String locationUrlString = "http://socialgainz.com/Bumpr/PerfectToiletTime/getLocation.php";
-            String locationUrlString = "http://socialgainz.com/Bumpr/PerfectToiletTime/GetAllLocations.php";
+            String locationUrlString = "http://ec2-54-71-248-37.us-west-2.compute.amazonaws.com/home/PerfectToiletTime/GetAllLocations.php";
             URL url = new URL(locationUrlString);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
@@ -376,7 +376,7 @@ public class MapsActivity extends FragmentActivity implements
         try {
             for (i=1; i<locationArray.length()+1; i++) {
                 // Goes through every bathroom's ratings page, sums the average values, and puts thems into a HashMap
-                String ratingsUrlString ="http://socialgainz.com/Bumpr/PerfectToiletTime/getRatings.php?bathroomID="+i+"&rand="+8;
+                String ratingsUrlString ="http://ec2-54-71-248-37.us-west-2.compute.amazonaws.com/home/PerfectToiletTime/getRatings.php?bathroomID="+i+"&rand="+8;
                 //String ratingsUrlString ="http://socialgainz.com/Bumpr/PerfectToiletTime/getRatings.php?bathroomID="+i+"&rand="+10;
                 URL url2 = new URL(ratingsUrlString);
                 HttpURLConnection urlConnection2 = (HttpURLConnection) url2.openConnection();
@@ -401,7 +401,7 @@ public class MapsActivity extends FragmentActivity implements
         bestBathroom = entry.getKey();
         try {
             // Goes through the ratings page for the best bathroom and retrieves the coordinates.
-            String bestUrlString = "http://socialgainz.com/Bumpr/PerfectToiletTime/getRatings.php?bathroomID="+bestBathroom+"&rand="+8;
+            String bestUrlString = "http://ec2-54-71-248-37.us-west-2.compute.amazonaws.com/home/PerfectToiletTime/getRatings.php?bathroomID="+bestBathroom+"&rand="+8;
             URL url3 = new URL(bestUrlString);
             HttpURLConnection urlConnection3 = (HttpURLConnection) url3.openConnection();
             InputStream inpu = new BufferedInputStream(urlConnection3.getInputStream());
@@ -450,7 +450,7 @@ public class MapsActivity extends FragmentActivity implements
             gettingBathrooms = true;
             JSONArray db = new JSONArray();
             JSONAsyncTask jsonBathrooms = new JSONAsyncTask(
-                    "http://socialgainz.com/Bumpr/PerfectToiletTime/getLocation.php?Latitude=" + lat +
+                    "http://ec2-54-71-248-37.us-west-2.compute.amazonaws.com/home/PerfectToiletTime/getLocation.php?Latitude=" + lat +
                             "&Longitude=" + lon + "&Distance=" + (searchDistanceMiles*100),
                     this
             );
@@ -464,7 +464,7 @@ public class MapsActivity extends FragmentActivity implements
         // return getJSONObject("average"); -> :{"Wifi":"3.333", "Clean":"4.555", "Busy":"5.000"}
         JSONObject ratings = new JSONObject();
         JSONAsyncTask jsonRatings = new JSONAsyncTask(
-                "http://socialgainz.com/Bumpr/PerfectToiletTime/getRatings.php?bathroomID="+bathroomId+
+                "http://ec2-54-71-248-37.us-west-2.compute.amazonaws.com/home/PerfectToiletTime/getRatings.php?bathroomID="+bathroomId+
                         "&rand="+(new Random()).nextInt(),
                 this
         );
