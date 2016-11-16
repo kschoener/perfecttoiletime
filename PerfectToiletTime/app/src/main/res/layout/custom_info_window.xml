@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/neutralBackgroundColor">
@@ -38,11 +39,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/bathroomRating"
-        android:layout_below="@+id/bathroomInfoSpacer"
-        android:layout_centerHorizontal="true"
         android:isIndicator="true"
         android:numStars="5"
         android:stepSize=".01"
-        android:rating="2.50"/>
+        android:rating="2.50"
+        android:layout_below="@+id/bathroomName"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

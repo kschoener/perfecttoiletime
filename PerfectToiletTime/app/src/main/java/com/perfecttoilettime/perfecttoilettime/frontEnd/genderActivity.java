@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.perfecttoilettime.perfecttoilettime.R;
+import com.perfecttoilettime.perfecttoilettime.backEnd.FavoritesDBHandler;
 
 public class genderActivity extends AppCompatActivity {
 

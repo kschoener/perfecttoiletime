@@ -60,7 +60,7 @@ import java.lang.*;
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback, OnMapLongClickListener,
         OnCameraMoveStartedListener, OnCameraMoveListener, OnCameraMoveCanceledListener,
-        OnInfoWindowLongClickListener,
+        OnInfoWindowLongClickListener, OnInfoWindowClickListener,
         InfoWindowAdapter{
 
     private GoogleMap mMap;
@@ -380,7 +380,6 @@ public class MapsActivity extends FragmentActivity implements
             for (i=1; i<locationArray.length()+1; i++) {
                 // Goes through every bathroom's ratings page, sums the average values, and puts thems into a HashMap
                 String ratingsUrlString = baseURL+"getRatings.php?bathroomID="+i+"&rand="+8;
-                //String ratingsUrlString ="http://socialgainz.com/Bumpr/PerfectToiletTime/getRatings.php?bathroomID="+i+"&rand="+10;
                 URL url2 = new URL(ratingsUrlString);
                 HttpURLConnection urlConnection2 = (HttpURLConnection) url2.openConnection();
                 InputStream inp = new BufferedInputStream(urlConnection2.getInputStream());
@@ -482,6 +481,9 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     //for InfoWindowAdapter
+    String bname;
+    double latitude;
+    double longitude;
     @Override
     public View getInfoWindow(Marker marker) {
         //set up infoWindowView and return it
@@ -492,6 +494,8 @@ public class MapsActivity extends FragmentActivity implements
                             Integer.parseInt(marker.getTitle())).getString("name")
                     )
             ;
+            bname = bathroomIdtoJSONInfo.get(
+                    Integer.parseInt(marker.getTitle())).getString("name");
             //get average
             JSONObject ratings = getRatings(Integer.parseInt(marker.getTitle()));
             JSONObject averages = ratings.getJSONObject("average");
@@ -503,8 +507,6 @@ public class MapsActivity extends FragmentActivity implements
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
         return infoWindowView;
     }
     //for InfoWindowAdapter
@@ -523,10 +525,22 @@ public class MapsActivity extends FragmentActivity implements
     public void onInfoWindowLongClick(Marker marker) {
         //TODO: create full bathroom info page
         //int bathroomID = Integer.parseInt(marker.getTitle()); //
-
+        Intent intent = new Intent(this, FullInfoPage.class);
+        intent.putExtra("name", bname);
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
+        startActivity(intent);
     }
 
-
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        //for purpose of favorites button but can also be used for info page instead of long click
+        Intent intent = new Intent(this, FullInfoPage.class);
+        intent.putExtra("name", bname);
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
+        startActivity(intent);
+    }
 
     public HashMap<Integer, Double> sortHashMapByValueLeastToGreatest(HashMap<Integer, Double> unsortedHashMap) {
         List<HashMap.Entry<Integer, Double>> list = new LinkedList<HashMap.Entry<Integer, Double>>(unsortedHashMap.entrySet());
@@ -701,7 +715,6 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
     //end of async task class
-
 
     //exit if the app was not given location permissions
     @Override
