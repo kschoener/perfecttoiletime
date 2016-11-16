@@ -106,7 +106,7 @@ public class preferencesActivity extends AppCompatActivity {
                 startActivity(startMap);
             }
         });
-    }
+   }
 
     private SeekBar.OnSeekBarChangeListener mySeekListener = new SeekBar.OnSeekBarChangeListener(){
         int progress = 0;
