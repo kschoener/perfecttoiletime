@@ -22,29 +22,9 @@ public class genderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gender);
-        Intent startIntent = getIntent();
 
-        ImageButton maleButton = (ImageButton) findViewById(R.id.imageButton);
-        maleButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-//                Intent i = new Intent(genderActivity.this, preferencesActivity.class);
-                Intent i = new Intent(v.getContext(), preferencesActivity.class);
-                i.putExtra(genderExtraKey,maleValue);
-                startActivity(i);
-            }
-        });
-        ImageButton femaleButton = (ImageButton) findViewById(R.id.imageButton2);
-        femaleButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-//                Intent i = new Intent(genderActivity.this, preferencesActivity.class);
-                Intent i = new Intent(v.getContext(), preferencesActivity.class);
-                i.putExtra(genderExtraKey, femaleValue);
-                startActivity(i);
-            }
-        });
-
-        if(startIntent.getExtras() != null && startIntent.getExtras().containsKey(genderActivity.genderExtraKey)){
-            gender = startIntent.getExtras().getInt(genderActivity.genderExtraKey);
+        if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(genderActivity.genderExtraKey)){
+            gender = getIntent().getExtras().getInt(genderActivity.genderExtraKey);
             switch (gender){
                 case genderActivity.maleValue:
                     (findViewById(R.id.activity_gender)).setBackgroundColor(
@@ -56,5 +36,31 @@ public class genderActivity extends AppCompatActivity {
                     break;
             }
         }
+
+        ImageButton maleButton = (ImageButton) findViewById(R.id.imageButton);
+        maleButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), preferencesActivity.class);
+                i.putExtra(genderExtraKey,maleValue);
+                Bundle b = getIntent().getExtras();
+                if(b.containsKey(genderExtraKey))
+                    b.remove(genderExtraKey);
+                i.putExtras(b);
+                startActivity(i);
+            }
+        });
+        ImageButton femaleButton = (ImageButton) findViewById(R.id.imageButton2);
+        femaleButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent i = new Intent(v.getContext(), preferencesActivity.class);
+                i.putExtra(genderExtraKey, femaleValue);
+                Bundle b = getIntent().getExtras();
+                if(b.containsKey(genderExtraKey))
+                    b.remove(genderExtraKey);
+                i.putExtras(b);
+                startActivity(i);
+            }
+        });
+
     }
 }

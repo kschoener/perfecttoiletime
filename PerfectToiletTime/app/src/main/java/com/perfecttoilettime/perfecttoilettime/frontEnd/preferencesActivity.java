@@ -26,8 +26,21 @@ public class preferencesActivity extends AppCompatActivity {
         int[] prevPref = null;
         Intent startIntent = getIntent();
 
-        if(startIntent.getExtras().containsKey(preferenceExtraKey)){
+        if(startIntent.getExtras() != null && startIntent.getExtras().containsKey(preferenceExtraKey)){
             prevPref = startIntent.getExtras().getIntArray(preferenceExtraKey);
+        }
+        if(startIntent.getExtras() != null && startIntent.getExtras().containsKey(genderActivity.genderExtraKey)){
+            gender = startIntent.getExtras().getInt(genderActivity.genderExtraKey);
+            switch (gender){
+                case genderActivity.maleValue:
+                    (findViewById(R.id.activity_preferences)).setBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.maleBackgroundColor, null));
+                    break;
+                case genderActivity.femaleValue:
+                    (findViewById(R.id.activity_preferences)).setBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.femaleBackgroundColor, null));
+                    break;
+            }
         }
 
         bars = new ArrayList<SeekBar>();
@@ -93,20 +106,6 @@ public class preferencesActivity extends AppCompatActivity {
                 startActivity(startMap);
             }
         });
-
-        if(startIntent.getExtras().containsKey(genderActivity.genderExtraKey)){
-            gender = startIntent.getExtras().getInt(genderActivity.genderExtraKey);
-            switch (gender){
-                case genderActivity.maleValue:
-                    (findViewById(R.id.activity_preferences)).setBackgroundColor(
-                            ResourcesCompat.getColor(getResources(), R.color.maleBackgroundColor, null));
-                    break;
-                case genderActivity.femaleValue:
-                    (findViewById(R.id.activity_preferences)).setBackgroundColor(
-                            ResourcesCompat.getColor(getResources(), R.color.femaleBackgroundColor, null));
-                    break;
-            }
-        }
     }
 
     private SeekBar.OnSeekBarChangeListener mySeekListener = new SeekBar.OnSeekBarChangeListener(){
