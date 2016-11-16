@@ -25,15 +25,20 @@ public class RatingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final com.whinc.widget.ratingbar.RatingBar ratingBar = (com.whinc.widget.ratingbar.RatingBar) findViewById(R.id.ratingBar);
-
+        final RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        ratingBar.setMaxCount(5);
+        ratingBar.setCount(2);
+        ratingBar.setFillDrawableRes(R.drawable.empty);
+        ratingBar.setEmptyDrawableRes(R.drawable.fill);
+        ratingBar.setSpace(0);
         ratingBar.setOnRatingChangeListener(new RatingBar.OnRatingChangeListener() {
             @Override
             public void onChange(RatingBar view, int preCount, int curCount) {
                 Log.i("TAG", String.format("previous count:%d, current count:%d", preCount, curCount));
             }
         });
-        final RatingBar ratingBar2 = new RatingBar(this);
+        final RatingBar ratingBar2 = (RatingBar) findViewById(R.id.ratingBar1);
+
         ratingBar2.setMaxCount(5);
         ratingBar2.setCount(2);
         ratingBar2.setFillDrawableRes(R.drawable.empty);
@@ -45,6 +50,31 @@ public class RatingActivity extends AppCompatActivity {
                 Log.i("TAG", String.format("previous count:%d, current count:%d", preCount, curCount));
             }
         });
+        final RatingBar ratingBar3 = (RatingBar) findViewById(R.id.ratingBar2);
+        ratingBar3.setMaxCount(5);
+        ratingBar3.setCount(2);
+        ratingBar3.setFillDrawableRes(R.drawable.empty);
+        ratingBar3.setEmptyDrawableRes(R.drawable.fill);
+        ratingBar3.setSpace(0);
+        ratingBar3.setOnRatingChangeListener(new RatingBar.OnRatingChangeListener() {
+            @Override
+            public void onChange(RatingBar view, int preCount, int curCount) {
+                Log.i("TAG", String.format("previous count:%d, current count:%d", preCount, curCount));
+            }
+        });
+        final RatingBar ratingBar4 = (RatingBar) findViewById(R.id.ratingBar3);
+        ratingBar4.setMaxCount(5);
+        ratingBar4.setCount(2);
+        ratingBar4.setFillDrawableRes(R.drawable.empty);
+        ratingBar4.setEmptyDrawableRes(R.drawable.fill);
+        ratingBar4.setSpace(0);
+        ratingBar4.setOnRatingChangeListener(new RatingBar.OnRatingChangeListener() {
+            @Override
+            public void onChange(RatingBar view, int preCount, int curCount) {
+                Log.i("TAG", String.format("previous count:%d, current count:%d", preCount, curCount));
+            }
+        });
+
 //        int[] prevRate = null;
         Intent startIntent = getIntent();
 //
