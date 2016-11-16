@@ -2,6 +2,7 @@ package com.perfecttoilettime.perfecttoilettime.frontEnd;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,11 +16,25 @@ import com.perfecttoilettime.perfecttoilettime.R;
 import com.perfecttoilettime.perfecttoilettime.backEnd.GMailSender;
 
 public class MailSenderActivity extends AppCompatActivity {
-
+    private int gender = genderActivity.maleValue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail_sender);
+
+        if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(genderActivity.genderExtraKey)){
+            gender = getIntent().getExtras().getInt(genderActivity.genderExtraKey);
+            switch (gender){
+                case genderActivity.maleValue:
+                    (findViewById(R.id.activity_mail_sender)).setBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.maleBackgroundColor, null));
+                    break;
+                case genderActivity.femaleValue:
+                    (findViewById(R.id.activity_mail_sender)).setBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.femaleBackgroundColor, null));
+                    break;
+            }
+        }
 
         Button sendMailBtn = (Button) findViewById(R.id.sendButton);
         sendMailBtn.setOnClickListener(new View.OnClickListener() {
