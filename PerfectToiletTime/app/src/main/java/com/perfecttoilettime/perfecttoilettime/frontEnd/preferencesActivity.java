@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
+import android.widget.RelativeLayout;
 import com.perfecttoilettime.perfecttoilettime.R;
 
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ public class preferencesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_preferences);
         int[] prevPref = null;
         Intent startIntent = getIntent();
 
@@ -33,11 +34,11 @@ public class preferencesActivity extends AppCompatActivity {
             gender = startIntent.getExtras().getInt(genderActivity.genderExtraKey);
             switch (gender){
                 case genderActivity.maleValue:
-                    (findViewById(R.id.activity_preferences)).setBackgroundColor(
+                    findViewById(R.id.activity_preferences).setBackgroundColor(
                             ResourcesCompat.getColor(getResources(), R.color.maleBackgroundColor, null));
                     break;
                 case genderActivity.femaleValue:
-                    (findViewById(R.id.activity_preferences)).setBackgroundColor(
+                    findViewById(R.id.activity_preferences).setBackgroundColor(
                             ResourcesCompat.getColor(getResources(), R.color.femaleBackgroundColor, null));
                     break;
             }
@@ -46,7 +47,6 @@ public class preferencesActivity extends AppCompatActivity {
         bars = new ArrayList<SeekBar>();
         valueKeepers = new ArrayList<TextView>();
         prefNames = new ArrayList<TextView>();
-        setContentView(R.layout.activity_preferences);
 
         for(int i =1; i <= 3; i++){
             String barID = "seekBar";
