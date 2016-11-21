@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
 import android.location.LocationListener;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -59,7 +60,7 @@ import java.lang.*;
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback, OnMapLongClickListener,
         OnCameraMoveStartedListener, OnCameraMoveListener, OnCameraMoveCanceledListener,
-        OnInfoWindowLongClickListener,
+        OnInfoWindowLongClickListener, OnInfoWindowClickListener,
         InfoWindowAdapter{
 
     private GoogleMap mMap;
@@ -69,6 +70,7 @@ public class MapsActivity extends FragmentActivity implements
     private final float LOCATION_REFRESH_DISTANCE = 20; //5 meters -> 5
     private final int LOCATION_REQUEST_CODE = 8;
     private final float zoomlevel = 16.0f;
+    private Double closestLatitudeReturn, closestLongitudeReturn;
 
     private boolean madeBathrooms = false;
 
@@ -83,10 +85,11 @@ public class MapsActivity extends FragmentActivity implements
     private View infoWindowView;
     private BitmapDescriptor genderColor;
     private boolean gettingBathrooms = false;
-    private Double closestLatitudeReturn, closestLongitudeReturn;
 
     private int searchDistanceMiles = 100000;
-    private LatLngBounds bathroomListContains;
+//    private LatLngBounds bathroomListContains;
+
+    private final String baseURL = "http://ec2-54-71-248-37.us-west-2.compute.amazonaws.com/home/PerfectToiletTime/";
 
     private final LocationListener userLocationListener = new LocationListener() {
         @Override
@@ -178,17 +181,17 @@ public class MapsActivity extends FragmentActivity implements
             switch (gender){
                 case genderActivity.maleValue:
                     genderColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
-                    jumpToMe.setBackgroundColor(getResources().getColor(R.color.maleBackgroundColor));
-                    prefLauncher.setBackgroundColor(getResources().getColor(R.color.maleBackgroundColor));
-                    findBathroom.setBackgroundColor(getResources().getColor(R.color.maleBackgroundColor));
-                    infoWindowView.setBackgroundColor(getResources().getColor(R.color.maleBackgroundColor));
+                    jumpToMe.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.maleBackgroundColor, null));
+                    prefLauncher.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.maleBackgroundColor, null));
+                    findBathroom.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.maleBackgroundColor, null));
+                    infoWindowView.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.maleBackgroundColor, null));
                     break;
                 case genderActivity.femaleValue:
                     genderColor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE);
-                    jumpToMe.setBackgroundColor(getResources().getColor(R.color.femaleBackgroundColor));
-                    prefLauncher.setBackgroundColor(getResources().getColor(R.color.femaleBackgroundColor));
-                    findBathroom.setBackgroundColor(getResources().getColor(R.color.femaleBackgroundColor));
-                    infoWindowView.setBackgroundColor(getResources().getColor(R.color.femaleBackgroundColor));
+                    jumpToMe.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.femaleBackgroundColor, null));
+                    prefLauncher.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.femaleBackgroundColor, null));
+                    findBathroom.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.femaleBackgroundColor, null));
+                    infoWindowView.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.femaleBackgroundColor, null));
                     break;
             }
         }
@@ -225,6 +228,7 @@ public class MapsActivity extends FragmentActivity implements
 //        mMap.setOnInfoWindowClickListener(this);
         mMap.setOnInfoWindowLongClickListener(this);
         //set camera move listeners
+        mMap.setOnCameraMoveCanceledListener(this);
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnCameraMoveListener(this);
 
@@ -240,7 +244,7 @@ public class MapsActivity extends FragmentActivity implements
         }
 //        mMap.addMarker(new MarkerOptions().position(mLocation).title(firstMarker));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, zoomlevel));
-        bathroomListContains = mMap.getProjection().getVisibleRegion().latLngBounds;
+//        bathroomListContains = mMap.getProjection().getVisibleRegion().latLngBounds;
         LatLng center = mMap.getProjection().getVisibleRegion().latLngBounds.getCenter();
         startBathroomRetrieval(center.latitude, center.longitude);
         // Add a marker in Sydney and move the camera
@@ -251,7 +255,9 @@ public class MapsActivity extends FragmentActivity implements
     private void addBathroomMarkers(String jsonArrayString) {
         //add markers to the hash map
         try {
+//            bathroomIdtoJSONInfo.clear();
             JSONArray db = new JSONArray(jsonArrayString);
+            Log.d("getLocation", "received data and it is: "+jsonArrayString);
             for (int i = 0; i < db.length(); i++) {
                 try {
                     JSONObject temp = db.getJSONObject(i);
@@ -268,7 +274,7 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         //update markers
-//        mMap.clear();
+        mMap.clear();
         for(int id : bathroomIdtoJSONInfo.keySet()){
             try {
                 JSONObject temp = bathroomIdtoJSONInfo.get(id);
@@ -285,7 +291,7 @@ public class MapsActivity extends FragmentActivity implements
                 Log.e("bathroom", "could not convert from jsonobject to latlng");
             }
         }
-
+        gettingBathrooms = false;
     }
 
     public void menuLauncher(View view) {
@@ -381,6 +387,86 @@ public class MapsActivity extends FragmentActivity implements
         return closestLongitudeReturn;
     }
 
+
+    // Created by Steven
+    public void findBest(View view) {
+        Intent intent = new Intent(this, MapsActivity.class);
+//        mMap.clear();
+        JSONArray locationArray = new JSONArray();
+        int i;
+        HashMap sortedBathroomsAvgRatingSumHashMap = new HashMap();
+        HashMap bathroomsAvgRatingSumHashMap = new HashMap();
+        int bestBathroom;
+        double longDouble = 0;
+        double latDouble = 0;
+        String name = "";
+
+        // Makes a JSON Array of all the bathrooms.
+        try {
+            //String locationUrlString = "http://socialgainz.com/Bumpr/PerfectToiletTime/getLocation.php";
+            String locationUrlString = baseURL+"GetAllLocations.php";
+            URL url = new URL(locationUrlString);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            String rs = readStream(in);
+            JSONArray locArray = new JSONArray(rs);
+            locationArray = locArray;
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        try {
+            for (i=1; i<locationArray.length()+1; i++) {
+                // Goes through every bathroom's ratings page, sums the average values, and puts thems into a HashMap
+                String ratingsUrlString = baseURL+"getRatings.php?bathroomID="+i+"&rand="+8;
+                URL url2 = new URL(ratingsUrlString);
+                HttpURLConnection urlConnection2 = (HttpURLConnection) url2.openConnection();
+                InputStream inp = new BufferedInputStream(urlConnection2.getInputStream());
+                String rStream = readStream(inp);
+                JSONObject ratingsObject = new JSONObject(rStream);
+                String avgBusyString = ratingsObject.getJSONObject("average").getString("Busy");
+                String avgCleanString = ratingsObject.getJSONObject("average").getString("Clean");
+                String avgWifiString = ratingsObject.getJSONObject("average").getString("Wifi");
+                Double avgBusyDouble = Double.parseDouble(avgBusyString);
+                Double avgCleanDouble = Double.parseDouble(avgCleanString);
+                Double avgWifiDouble = Double.parseDouble(avgWifiString);
+                Double sumOfAverages = avgBusyDouble + avgCleanDouble + avgWifiDouble;
+                bathroomsAvgRatingSumHashMap.put(i,sumOfAverages);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        // HashMap is sorted so that the best rated is on top.
+        sortedBathroomsAvgRatingSumHashMap = sortHashMapByValue(bathroomsAvgRatingSumHashMap);
+        HashMap.Entry<Integer, Double> entry = (HashMap.Entry<Integer, Double>) sortedBathroomsAvgRatingSumHashMap.entrySet().iterator().next();
+        bestBathroom = entry.getKey();
+        try {
+            // Goes through the ratings page for the best bathroom and retrieves the coordinates.
+            String bestUrlString = baseURL+"getRatings.php?bathroomID="+bestBathroom+"&rand="+8;
+            URL url3 = new URL(bestUrlString);
+            HttpURLConnection urlConnection3 = (HttpURLConnection) url3.openConnection();
+            InputStream inpu = new BufferedInputStream(urlConnection3.getInputStream());
+            String reaStream = readStream(inpu);
+            JSONObject ratingsObject = new JSONObject(reaStream);
+            String latValue = ratingsObject.getJSONObject("info").getString("Latitude");
+            String longValue = ratingsObject.getJSONObject("info").getString("Longitude");
+            name = ratingsObject.getJSONObject("info").getString("name");
+            latDouble = Double.parseDouble(latValue);
+            longDouble = Double.parseDouble(longValue);
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        //mMap.addMarker(new MarkerOptions().position(new LatLng(latDouble, longDouble)).title("Bathroom_ID:"+bestBathroom));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(latDouble, longDouble)).title(name));
+        startActivity(intent);
+    }
+
+    public void specifyBathroom(View view) {
+        Intent intent = new Intent(this, SpecifyActivity.class);
+        startActivity(intent);
+    }
+
     // Sorts HashMap by value.
     public HashMap<Integer, Double> sortHashMapByValue(HashMap<Integer, Double> unsortedHashMap) {
         List<HashMap.Entry<Integer, Double>> list = new LinkedList<HashMap.Entry<Integer, Double>>(unsortedHashMap.entrySet());
@@ -398,15 +484,16 @@ public class MapsActivity extends FragmentActivity implements
 
 
     private void startBathroomRetrieval(double lat, double lon){
-        //this gives you all bathrooms within 12 miles of the given coordinates
+        //this gives you all bathrooms within the view
         //http://socialgainz.com/Bumpr/PerfectToiletTime/getLocation.php?Latitude=12&Longitude=77&Distance=12
         //"Latitude", "Longitude", "name"
         if(!gettingBathrooms) {
+            Log.d("getLocation", ("Getting locations for lat "+lat+", lon "+lon+", and distance, "+searchDistanceMiles));
             gettingBathrooms = true;
             JSONArray db = new JSONArray();
             JSONAsyncTask jsonBathrooms = new JSONAsyncTask(
-                    "http://socialgainz.com/Bumpr/PerfectToiletTime/getLocation.php?Latitude=" + lat +
-                            "&Longitude=" + lon + "&Distance=" + (searchDistanceMiles*100),
+                    baseURL+"getLocation.php?Latitude=" + lat +
+                            "&Longitude=" + lon + "&Distance=" + (searchDistanceMiles),
                     this
             );
             jsonBathrooms.execute();
@@ -419,7 +506,7 @@ public class MapsActivity extends FragmentActivity implements
         // return getJSONObject("average"); -> :{"Wifi":"3.333", "Clean":"4.555", "Busy":"5.000"}
         JSONObject ratings = new JSONObject();
         JSONAsyncTask jsonRatings = new JSONAsyncTask(
-                "http://socialgainz.com/Bumpr/PerfectToiletTime/getRatings.php?bathroomID="+bathroomId+
+                baseURL+"getRatings.php?bathroomID="+bathroomId+
                         "&rand="+(new Random()).nextInt(),
                 this
         );
@@ -428,41 +515,52 @@ public class MapsActivity extends FragmentActivity implements
             String s = jsonRatings.execute().get();
             ratings = new JSONObject(s);
         } catch (Exception e) {
+            Log.e("getRatings", "there was an error loading the ratings for bathroomID: "+bathroomId);
             e.printStackTrace();
         }
         return ratings;
     }
 
     //for InfoWindowAdapter
+    String bname;
+    double blatitude;
+    double blongitude;
     @Override
     public View getInfoWindow(Marker marker) {
         //set up infoWindowView and return it
         try {
             //get name from id
-            ((TextView)infoWindowView.findViewById(R.id.bathroomName))
-                    .setText(bathroomIdtoJSONInfo.get(
-                            Integer.parseInt(marker.getTitle())).getString("name")
-                    )
-            ;
+            bname = bathroomIdtoJSONInfo.get(
+                    Integer.parseInt(marker.getTitle())).getString("name");
+            blatitude = bathroomIdtoJSONInfo.get(
+                    Integer.parseInt(marker.getTitle())).getDouble("Latitude");
+            blongitude = bathroomIdtoJSONInfo.get(
+                    Integer.parseInt(marker.getTitle())).getDouble("Longitude");
+            //set info window title
+            ((TextView)infoWindowView.findViewById(R.id.bathroomName)).setText(bname);
             //get average
             JSONObject ratings = getRatings(Integer.parseInt(marker.getTitle()));
+            Log.d("getInfoWindow", "got the ratings");
             JSONObject averages = ratings.getJSONObject("average");
+            Log.d("getInfoWindow", "got the averages");
             double wifiAvg = averages.getDouble("Wifi");
+            Log.d("getInfoWindow", "got the wifi average");
             double cleanAvg = averages.getDouble("Clean");
+            Log.d("getInfoWindow", "got the clean average");
             double busyAvg = averages.getDouble("Busy");
+            Log.d("getInfoWindow", "got the busy average");
             float totalAverage = (float)((wifiAvg+cleanAvg+busyAvg)/3);
+            Log.d("getInfoWindow", "got the total average: "+totalAverage);
             ((RatingBar)infoWindowView.findViewById(R.id.bathroomRating)).setRating(totalAverage);
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.e("quickInfoFail", "Quick info failed to load with marker title: "+marker.getTitle()+" and id: "+marker.getId());
         }
-
-
         return infoWindowView;
     }
     //for InfoWindowAdapter
     @Override
     public View getInfoContents(Marker marker) {
-
 //            if (MapsActivity.this.marker != null
 //                    && MapsActivity.this.marker.isInfoWindowShown()) {
 //                MapsActivity.this.marker.hideInfoWindow();
@@ -475,10 +573,22 @@ public class MapsActivity extends FragmentActivity implements
     public void onInfoWindowLongClick(Marker marker) {
         //TODO: create full bathroom info page
         //int bathroomID = Integer.parseInt(marker.getTitle()); //
-
+        Intent intent = new Intent(this, FullInfoPage.class);
+        intent.putExtra("name", bname);
+        intent.putExtra("latitude", blatitude);
+        intent.putExtra("longitude", blongitude);
+        startActivity(intent);
     }
 
-
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        //for purpose of favorites button but can also be used for info page instead of long click
+        Intent intent = new Intent(this, FullInfoPage.class);
+        intent.putExtra("name", bname);
+        intent.putExtra("latitude", blatitude);
+        intent.putExtra("longitude", blongitude);
+        startActivity(intent);
+    }
 
     public HashMap<Integer, Double> sortHashMapByValueLeastToGreatest(HashMap<Integer, Double> unsortedHashMap) {
         List<HashMap.Entry<Integer, Double>> list = new LinkedList<HashMap.Entry<Integer, Double>>(unsortedHashMap.entrySet());
@@ -511,55 +621,56 @@ public class MapsActivity extends FragmentActivity implements
 
     private void updateBounds(){
         LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-        boolean needToLoad = false;
-        LatLng newNortheast = bathroomListContains.northeast;
-        LatLng newSouthwest = bathroomListContains.southwest;
-        if(bounds.northeast.longitude > newNortheast.longitude){
-            newNortheast = new LatLng(newNortheast.latitude, bounds.northeast.longitude);
-            needToLoad = true;
-        }
-        if(bounds.northeast.latitude > newNortheast.latitude){
-            newNortheast = new LatLng(bounds.northeast.latitude, newNortheast.longitude);
-            needToLoad = true;
-        }
-        if(bounds.southwest.longitude < newSouthwest.longitude){
-            newSouthwest = new LatLng(newSouthwest.latitude, bounds.southwest.longitude);
-            needToLoad = true;
-        }
-        if(bounds.southwest.latitude > newSouthwest.latitude){
-            newSouthwest = new LatLng(bounds.southwest.latitude, newSouthwest.longitude);
-            needToLoad = true;
-        }
+        updateSearchDistance(bounds);
+        startBathroomRetrieval(bounds.getCenter().latitude, bounds.getCenter().longitude);
+//        boolean needToLoad = false;
+//        LatLng newNortheast = bathroomListContains.northeast;
+//        LatLng newSouthwest = bathroomListContains.southwest;
+//        if(bounds.northeast.longitude > newNortheast.longitude){
+//            newNortheast = new LatLng(newNortheast.latitude, bounds.northeast.longitude);
+//            needToLoad = true;
+//        }
+//        if(bounds.northeast.latitude > newNortheast.latitude){
+//            newNortheast = new LatLng(bounds.northeast.latitude, newNortheast.longitude);
+//            needToLoad = true;
+//        }
+//        if(bounds.southwest.longitude < newSouthwest.longitude){
+//            newSouthwest = new LatLng(newSouthwest.latitude, bounds.southwest.longitude);
+//            needToLoad = true;
+//        }
+//        if(bounds.southwest.latitude > newSouthwest.latitude){
+//            newSouthwest = new LatLng(bounds.southwest.latitude, newSouthwest.longitude);
+//            needToLoad = true;
+//        }
 
-        if(needToLoad) {
-            bathroomListContains = new LatLngBounds(newSouthwest, newNortheast);
-            updateSearchDistance(bounds);
-            LatLng center = bounds.getCenter();
-            startBathroomRetrieval(center.latitude, center.longitude);
-        }else{
-            addBathroomMarkers("");
-        }
+//        if(needToLoad) {
+//            bathroomListContains = new LatLngBounds(newSouthwest, newNortheast);
+//            updateSearchDistance(bounds);
+//            LatLng center = bounds.getCenter();
+//            startBathroomRetrieval(center.latitude, center.longitude);
+//        }else{
+//            addBathroomMarkers("");
+//        }
+
     }
 
     private void updateSearchDistance(LatLngBounds bounds){
         //each degree of latitude is approx. 69 miles
         //each degree of longitude is approx. 55 miles
-        int latD = (int)Math.abs((bounds.northeast.latitude-bounds.southwest.latitude));
-        int lonD = (int)Math.abs((bounds.northeast.longitude-bounds.southwest.longitude));
+        int latD = (int)Math.ceil(Math.abs((bounds.northeast.latitude-bounds.southwest.latitude)))*75;
+        int lonD = (int)Math.ceil(Math.abs((bounds.northeast.longitude-bounds.southwest.longitude)))*60;
         searchDistanceMiles = latD > lonD ? latD : lonD;
+        searchDistanceMiles = searchDistanceMiles < 50 ? 50 : searchDistanceMiles;
     }
 
     @Override
     public void onCameraMoveStarted(int reason) {
-        /*
         if (reason == OnCameraMoveStartedListener.REASON_GESTURE) {
-            //this works
+            Log.d("cameraMove", "update bathrooms because camera move started");
             updateBounds();
 //            Toast.makeText(this, "The user gestured on the map.", Toast.LENGTH_SHORT).show();
-        } else if (reason == OnCameraMoveStartedListener.REASON_API_ANIMATION) {
-            //this works
+        } /*else if (reason == OnCameraMoveStartedListener.REASON_API_ANIMATION) {
             updateBounds();
-            //todo bring up bathroom information
 //            Toast.makeText(this, "The user tapped something on the map.",
 //                    Toast.LENGTH_SHORT).show();
 
@@ -580,11 +691,13 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onCameraMove() {
-        //updateBounds();
+//        Log.d("cameraMove", "update bathrooms because onCameraMove");
+//        updateBounds();
     }
 
     @Override
     public void onCameraMoveCanceled() {
+        Log.d("cameraMove", "update bathrooms because onCameraMoveCancelled");
         updateBounds();
     }
 
@@ -613,12 +726,11 @@ public class MapsActivity extends FragmentActivity implements
         @Override
         protected void onPostExecute(String strings) {
             super.onPostExecute(strings);
-            try {
+            try{
                 JSONObject temp = new JSONObject(strings);
             }catch (Exception e) {
                 mRef.addBathroomMarkers(strings);
             }
-
 
         }
 
@@ -658,7 +770,6 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
     //end of async task class
-
 
     //exit if the app was not given location permissions
     @Override
