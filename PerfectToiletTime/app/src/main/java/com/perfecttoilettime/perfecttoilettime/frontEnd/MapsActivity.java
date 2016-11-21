@@ -299,15 +299,19 @@ public class MapsActivity extends FragmentActivity implements
 
     // Created by Steven
     public void findClosest(View view) {
-	mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+	    /*
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_REQUEST_CODE);
         }
-        Location myLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        Double myLat = myLocation.getLatitude();
-        Double myLong = myLocation.getLongitude();
+        Location myLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER); //this will be null if we can't get a last known location
+        */
+//        Double myLat = myLocation.getLatitude();
+//        Double myLong = myLocation.getLongitude();
+        Double myLat = mLocation.latitude;
+        Double myLong = mLocation.longitude;
         Double closestLatitude = findClosestLatitude(myLat, myLong);
         Double closestLongitude = findClosestLongitude(myLat, myLong);
         //mMap.addMarker(new MarkerOptions().position(new LatLng(closestLatitude,closestLongitude)));
@@ -494,6 +498,7 @@ public class MapsActivity extends FragmentActivity implements
         intent.putExtra("name", bname);
         intent.putExtra("latitude", blatitude);
         intent.putExtra("longitude", blongitude);
+        intent.putExtra(genderActivity.genderExtraKey, gender);
         startActivity(intent);
     }
 
@@ -602,6 +607,7 @@ public class MapsActivity extends FragmentActivity implements
         double[] put = {pos.latitude, pos.longitude};
         Log.d("WTFLongClick", "Click lat: "+pos.latitude+", Click lon: "+pos.longitude);
         Intent i = new Intent(this, AddBathroomActivity.class);
+        i.putExtra(genderActivity.genderExtraKey, gender);
         i.putExtra(AddBathroomActivity.addBathroomExtra, put);
         startActivity(i);
     }
