@@ -23,7 +23,7 @@
         android:layout_marginTop="46dp"/>
 
     <TextView
-        android:text="Space"
+        android:text="Cleanliness"
         android:textSize="24dp"
         android:textColor="#253275"
         android:textStyle="bold"
@@ -35,7 +35,7 @@
         android:layout_marginTop="46dp" />
 
     <TextView
-        android:text="Cleanliness"
+        android:text="Busy"
         android:textSize="24dp"
         android:textColor="#253275"
         android:textStyle="bold"

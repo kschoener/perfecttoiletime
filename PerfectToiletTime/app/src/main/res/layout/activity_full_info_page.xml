@@ -23,23 +23,21 @@
         android:textSize="@dimen/titleFontSize"
         android:layout_centerHorizontal="true"/>
 
+    <TextView
+        android:text="Add to favorites!"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView11"
+        android:textSize="18sp"
+        android:layout_below="@+id/bathroomName"
+        android:layout_alignParentEnd="true" />
+
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/btn_star_big_off"
         android:id="@+id/favButton"
-        android:layout_marginBottom="70dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/bathroomName"
-        android:layout_marginEnd="70dp" />
-
-    <TextView
-        android:text="Add to favorites!"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/favButton"
-        android:layout_alignEnd="@+id/favButton"
-        android:layout_marginEnd="16dp"
-        android:id="@+id/textView11" />
+        android:layout_below="@+id/textView11"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

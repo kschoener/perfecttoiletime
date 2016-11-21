@@ -17,6 +17,7 @@ public class preferencesActivity extends AppCompatActivity {
     private ArrayList<SeekBar> bars;
     private ArrayList<TextView> valueKeepers;
     private ArrayList<TextView> prefNames;
+    private int[] prevPref = null;
     public static final String preferenceExtraKey = "prefs";
 
     private int gender = genderActivity.maleValue;
@@ -24,7 +25,6 @@ public class preferencesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
-        int[] prevPref = null;
         Intent startIntent = getIntent();
 
         if(startIntent.getExtras() != null && startIntent.getExtras().containsKey(preferenceExtraKey)){
@@ -78,17 +78,11 @@ public class preferencesActivity extends AppCompatActivity {
         emailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(preferencesActivity.this, MailSenderActivity.class));
+                Intent i = new Intent(preferencesActivity.this, MailSenderActivity.class);
+                i.putExtra(genderActivity.genderExtraKey, gender);
+                startActivity(i);
             }
         });
-
-//        Button addBathroomButton = (Button) findViewById(R.id.addBathroomButton);
-//        addBathroomButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(preferencesActivity.this, AddBathroomActivity.class));
-//            }
-//        });
 
         Button saveButton = (Button) findViewById(R.id.prefSaveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -111,8 +105,11 @@ public class preferencesActivity extends AppCompatActivity {
         favoritesList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(preferencesActivity.this, FavoritesList.class);
-                startActivity(intent);
+                Intent i = new Intent(preferencesActivity.this, FavoritesList.class);
+//                if(prevPref != null)
+//                    intent.putExtra(preferenceExtraKey, prevPref);
+                i.putExtra(genderActivity.genderExtraKey, gender);
+                startActivity(i);
             }
         });
     }

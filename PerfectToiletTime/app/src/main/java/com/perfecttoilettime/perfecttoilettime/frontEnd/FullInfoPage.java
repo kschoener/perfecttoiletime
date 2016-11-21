@@ -28,6 +28,20 @@ public class FullInfoPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_info_page);
 
+        if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(genderActivity.genderExtraKey)){
+            gender = getIntent().getExtras().getInt(genderActivity.genderExtraKey);
+            switch (gender){
+                case genderActivity.maleValue:
+                    (findViewById(R.id.activity_full_info_page)).setBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.maleBackgroundColor, null));
+                    break;
+                case genderActivity.femaleValue:
+                    (findViewById(R.id.activity_full_info_page)).setBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.femaleBackgroundColor, null));
+                    break;
+            }
+        }
+
         bathroomName = (TextView) findViewById(R.id.bathroomName);
         Intent intent = getIntent();
         final String name = intent.getExtras().getString("name");
@@ -69,3 +83,4 @@ public class FullInfoPage extends AppCompatActivity {
         });
     }
 }
+//my name is kyle and this is the best project that i have ever done in my entire life and i hope you like it

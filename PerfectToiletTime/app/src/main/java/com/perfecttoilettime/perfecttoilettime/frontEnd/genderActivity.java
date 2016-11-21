@@ -19,11 +19,13 @@ public class genderActivity extends AppCompatActivity {
 
     private int gender = maleValue;
 
+    private Bundle _bundle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gender);
-
+        _bundle = getIntent().getExtras();
         if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(genderActivity.genderExtraKey)){
             gender = getIntent().getExtras().getInt(genderActivity.genderExtraKey);
             switch (gender){
@@ -43,10 +45,10 @@ public class genderActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(v.getContext(), preferencesActivity.class);
                 i.putExtra(genderExtraKey,maleValue);
-                Bundle b = getIntent().getExtras();
-                if(b.containsKey(genderExtraKey))
-                    b.remove(genderExtraKey);
-                i.putExtras(b);
+                if(_bundle != null && _bundle.containsKey(genderExtraKey))
+                    _bundle.remove(genderExtraKey);
+                if(_bundle != null)
+                    i.putExtras(_bundle);
                 startActivity(i);
             }
         });
@@ -55,10 +57,10 @@ public class genderActivity extends AppCompatActivity {
             public void onClick(View v){
                 Intent i = new Intent(v.getContext(), preferencesActivity.class);
                 i.putExtra(genderExtraKey, femaleValue);
-                Bundle b = getIntent().getExtras();
-                if(b.containsKey(genderExtraKey))
-                    b.remove(genderExtraKey);
-                i.putExtras(b);
+                if(_bundle != null && _bundle.containsKey(genderExtraKey))
+                    _bundle.remove(genderExtraKey);
+                if(_bundle != null)
+                    i.putExtras(_bundle);
                 startActivity(i);
             }
         });

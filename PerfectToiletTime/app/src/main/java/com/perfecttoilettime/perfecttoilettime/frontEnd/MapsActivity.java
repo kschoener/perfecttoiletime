@@ -86,7 +86,7 @@ public class MapsActivity extends FragmentActivity implements
     private boolean gettingBathrooms = false;
 
     private int searchDistanceMiles = 100000;
-    private LatLngBounds bathroomListContains;
+//    private LatLngBounds bathroomListContains;
 
     private final String baseURL = "http://ec2-54-71-248-37.us-west-2.compute.amazonaws.com/home/PerfectToiletTime/";
 
@@ -229,6 +229,7 @@ public class MapsActivity extends FragmentActivity implements
 //        mMap.setOnInfoWindowClickListener(this);
         mMap.setOnInfoWindowLongClickListener(this);
         //set camera move listeners
+        mMap.setOnCameraMoveCanceledListener(this);
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnCameraMoveListener(this);
 
@@ -244,7 +245,7 @@ public class MapsActivity extends FragmentActivity implements
         }
 //        mMap.addMarker(new MarkerOptions().position(mLocation).title(firstMarker));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, zoomlevel));
-        bathroomListContains = mMap.getProjection().getVisibleRegion().latLngBounds;
+//        bathroomListContains = mMap.getProjection().getVisibleRegion().latLngBounds;
         LatLng center = mMap.getProjection().getVisibleRegion().latLngBounds.getCenter();
         startBathroomRetrieval(center.latitude, center.longitude);
         // Add a marker in Sydney and move the camera
@@ -255,7 +256,9 @@ public class MapsActivity extends FragmentActivity implements
     private void addBathroomMarkers(String jsonArrayString) {
         //add markers to the hash map
         try {
+//            bathroomIdtoJSONInfo.clear();
             JSONArray db = new JSONArray(jsonArrayString);
+            Log.d("getLocation", "received data and it is: "+jsonArrayString);
             for (int i = 0; i < db.length(); i++) {
                 try {
                     JSONObject temp = db.getJSONObject(i);
@@ -272,7 +275,7 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         //update markers
-//        mMap.clear();
+        mMap.clear();
         for(int id : bathroomIdtoJSONInfo.keySet()){
             try {
                 JSONObject temp = bathroomIdtoJSONInfo.get(id);
@@ -289,7 +292,7 @@ public class MapsActivity extends FragmentActivity implements
                 Log.e("bathroom", "could not convert from jsonobject to latlng");
             }
         }
-
+        gettingBathrooms = false;
     }
 
     public void menuLauncher(View view) {
@@ -346,8 +349,6 @@ public class MapsActivity extends FragmentActivity implements
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), zoomlevel));
 
     }
-
-
 
     // Created by Steven
     public void findBest(View view) {
@@ -445,15 +446,16 @@ public class MapsActivity extends FragmentActivity implements
 
 
     private void startBathroomRetrieval(double lat, double lon){
-        //this gives you all bathrooms within 12 miles of the given coordinates
+        //this gives you all bathrooms within the view
         //http://socialgainz.com/Bumpr/PerfectToiletTime/getLocation.php?Latitude=12&Longitude=77&Distance=12
         //"Latitude", "Longitude", "name"
         if(!gettingBathrooms) {
+            Log.d("getLocation", ("Getting locations for lat "+lat+", lon "+lon+", and distance, "+searchDistanceMiles));
             gettingBathrooms = true;
             JSONArray db = new JSONArray();
             JSONAsyncTask jsonBathrooms = new JSONAsyncTask(
                     baseURL+"getLocation.php?Latitude=" + lat +
-                            "&Longitude=" + lon + "&Distance=" + (searchDistanceMiles*100),
+                            "&Longitude=" + lon + "&Distance=" + (searchDistanceMiles),
                     this
             );
             jsonBathrooms.execute();
@@ -475,6 +477,7 @@ public class MapsActivity extends FragmentActivity implements
             String s = jsonRatings.execute().get();
             ratings = new JSONObject(s);
         } catch (Exception e) {
+            Log.e("getRatings", "there was an error loading the ratings for bathroomID: "+bathroomId);
             e.printStackTrace();
         }
         return ratings;
@@ -482,37 +485,44 @@ public class MapsActivity extends FragmentActivity implements
 
     //for InfoWindowAdapter
     String bname;
-    double latitude;
-    double longitude;
+    double blatitude;
+    double blongitude;
     @Override
     public View getInfoWindow(Marker marker) {
         //set up infoWindowView and return it
         try {
             //get name from id
-            ((TextView)infoWindowView.findViewById(R.id.bathroomName))
-                    .setText(bathroomIdtoJSONInfo.get(
-                            Integer.parseInt(marker.getTitle())).getString("name")
-                    )
-            ;
             bname = bathroomIdtoJSONInfo.get(
                     Integer.parseInt(marker.getTitle())).getString("name");
+            blatitude = bathroomIdtoJSONInfo.get(
+                    Integer.parseInt(marker.getTitle())).getDouble("Latitude");
+            blongitude = bathroomIdtoJSONInfo.get(
+                    Integer.parseInt(marker.getTitle())).getDouble("Longitude");
+            //set info window title
+            ((TextView)infoWindowView.findViewById(R.id.bathroomName)).setText(bname);
             //get average
             JSONObject ratings = getRatings(Integer.parseInt(marker.getTitle()));
+            Log.d("getInfoWindow", "got the ratings");
             JSONObject averages = ratings.getJSONObject("average");
+            Log.d("getInfoWindow", "got the averages");
             double wifiAvg = averages.getDouble("Wifi");
+            Log.d("getInfoWindow", "got the wifi average");
             double cleanAvg = averages.getDouble("Clean");
+            Log.d("getInfoWindow", "got the clean average");
             double busyAvg = averages.getDouble("Busy");
+            Log.d("getInfoWindow", "got the busy average");
             float totalAverage = (float)((wifiAvg+cleanAvg+busyAvg)/3);
+            Log.d("getInfoWindow", "got the total average: "+totalAverage);
             ((RatingBar)infoWindowView.findViewById(R.id.bathroomRating)).setRating(totalAverage);
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.e("quickInfoFail", "Quick info failed to load with marker title: "+marker.getTitle()+" and id: "+marker.getId());
         }
         return infoWindowView;
     }
     //for InfoWindowAdapter
     @Override
     public View getInfoContents(Marker marker) {
-
 //            if (MapsActivity.this.marker != null
 //                    && MapsActivity.this.marker.isInfoWindowShown()) {
 //                MapsActivity.this.marker.hideInfoWindow();
@@ -527,8 +537,8 @@ public class MapsActivity extends FragmentActivity implements
         //int bathroomID = Integer.parseInt(marker.getTitle()); //
         Intent intent = new Intent(this, FullInfoPage.class);
         intent.putExtra("name", bname);
-        intent.putExtra("latitude", latitude);
-        intent.putExtra("longitude", longitude);
+        intent.putExtra("latitude", blatitude);
+        intent.putExtra("longitude", blongitude);
         startActivity(intent);
     }
 
@@ -537,8 +547,8 @@ public class MapsActivity extends FragmentActivity implements
         //for purpose of favorites button but can also be used for info page instead of long click
         Intent intent = new Intent(this, FullInfoPage.class);
         intent.putExtra("name", bname);
-        intent.putExtra("latitude", latitude);
-        intent.putExtra("longitude", longitude);
+        intent.putExtra("latitude", blatitude);
+        intent.putExtra("longitude", blongitude);
         startActivity(intent);
     }
 
@@ -573,55 +583,56 @@ public class MapsActivity extends FragmentActivity implements
 
     private void updateBounds(){
         LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-        boolean needToLoad = false;
-        LatLng newNortheast = bathroomListContains.northeast;
-        LatLng newSouthwest = bathroomListContains.southwest;
-        if(bounds.northeast.longitude > newNortheast.longitude){
-            newNortheast = new LatLng(newNortheast.latitude, bounds.northeast.longitude);
-            needToLoad = true;
-        }
-        if(bounds.northeast.latitude > newNortheast.latitude){
-            newNortheast = new LatLng(bounds.northeast.latitude, newNortheast.longitude);
-            needToLoad = true;
-        }
-        if(bounds.southwest.longitude < newSouthwest.longitude){
-            newSouthwest = new LatLng(newSouthwest.latitude, bounds.southwest.longitude);
-            needToLoad = true;
-        }
-        if(bounds.southwest.latitude > newSouthwest.latitude){
-            newSouthwest = new LatLng(bounds.southwest.latitude, newSouthwest.longitude);
-            needToLoad = true;
-        }
+        updateSearchDistance(bounds);
+        startBathroomRetrieval(bounds.getCenter().latitude, bounds.getCenter().longitude);
+//        boolean needToLoad = false;
+//        LatLng newNortheast = bathroomListContains.northeast;
+//        LatLng newSouthwest = bathroomListContains.southwest;
+//        if(bounds.northeast.longitude > newNortheast.longitude){
+//            newNortheast = new LatLng(newNortheast.latitude, bounds.northeast.longitude);
+//            needToLoad = true;
+//        }
+//        if(bounds.northeast.latitude > newNortheast.latitude){
+//            newNortheast = new LatLng(bounds.northeast.latitude, newNortheast.longitude);
+//            needToLoad = true;
+//        }
+//        if(bounds.southwest.longitude < newSouthwest.longitude){
+//            newSouthwest = new LatLng(newSouthwest.latitude, bounds.southwest.longitude);
+//            needToLoad = true;
+//        }
+//        if(bounds.southwest.latitude > newSouthwest.latitude){
+//            newSouthwest = new LatLng(bounds.southwest.latitude, newSouthwest.longitude);
+//            needToLoad = true;
+//        }
 
-        if(needToLoad) {
-            bathroomListContains = new LatLngBounds(newSouthwest, newNortheast);
-            updateSearchDistance(bounds);
-            LatLng center = bounds.getCenter();
-            startBathroomRetrieval(center.latitude, center.longitude);
-        }else{
-            addBathroomMarkers("");
-        }
+//        if(needToLoad) {
+//            bathroomListContains = new LatLngBounds(newSouthwest, newNortheast);
+//            updateSearchDistance(bounds);
+//            LatLng center = bounds.getCenter();
+//            startBathroomRetrieval(center.latitude, center.longitude);
+//        }else{
+//            addBathroomMarkers("");
+//        }
+
     }
 
     private void updateSearchDistance(LatLngBounds bounds){
         //each degree of latitude is approx. 69 miles
         //each degree of longitude is approx. 55 miles
-        int latD = (int)Math.abs((bounds.northeast.latitude-bounds.southwest.latitude));
-        int lonD = (int)Math.abs((bounds.northeast.longitude-bounds.southwest.longitude));
+        int latD = (int)Math.ceil(Math.abs((bounds.northeast.latitude-bounds.southwest.latitude)))*75;
+        int lonD = (int)Math.ceil(Math.abs((bounds.northeast.longitude-bounds.southwest.longitude)))*60;
         searchDistanceMiles = latD > lonD ? latD : lonD;
+        searchDistanceMiles = searchDistanceMiles < 50 ? 50 : searchDistanceMiles;
     }
 
     @Override
     public void onCameraMoveStarted(int reason) {
-        /*
         if (reason == OnCameraMoveStartedListener.REASON_GESTURE) {
-            //this works
+            Log.d("cameraMove", "update bathrooms because camera move started");
             updateBounds();
 //            Toast.makeText(this, "The user gestured on the map.", Toast.LENGTH_SHORT).show();
-        } else if (reason == OnCameraMoveStartedListener.REASON_API_ANIMATION) {
-            //this works
+        } /*else if (reason == OnCameraMoveStartedListener.REASON_API_ANIMATION) {
             updateBounds();
-            //todo bring up bathroom information
 //            Toast.makeText(this, "The user tapped something on the map.",
 //                    Toast.LENGTH_SHORT).show();
 
@@ -642,11 +653,13 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onCameraMove() {
-        //updateBounds();
+//        Log.d("cameraMove", "update bathrooms because onCameraMove");
+//        updateBounds();
     }
 
     @Override
     public void onCameraMoveCanceled() {
+        Log.d("cameraMove", "update bathrooms because onCameraMoveCancelled");
         updateBounds();
     }
 
@@ -675,7 +688,11 @@ public class MapsActivity extends FragmentActivity implements
         @Override
         protected void onPostExecute(String strings) {
             super.onPostExecute(strings);
-            mRef.addBathroomMarkers(strings);
+            try{
+                JSONObject temp = new JSONObject(strings);
+            }catch (Exception e) {
+                mRef.addBathroomMarkers(strings);
+            }
 
         }
 

@@ -13,137 +13,112 @@
     tools:context="com.perfecttoilettime.perfecttoilettime.frontEnd.RatingActivity"
     android:background="@color/neutralBackgroundColor">
 
-
     <TextView
         android:text="TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/rateText3"
-        android:layout_alignTop="@+id/ratingBar2"
-        android:layout_alignParentStart="true"
-        tools:text="Flush"
-        android:textSize="24sp"
-        android:textColor="@color/fontColor" />
+        android:id="@+id/rateText"
+        tools:text="Cleanliness"
+        android:textSize="28sp"
+        android:textColor="@color/fontColor"
+        android:layout_alignParentStart="true" />
+
+    <com.whinc.widget.ratingbar.RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingBar"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/rateText"
+        app:rb_max_count="5"
+        app:rb_count="3"
+        app:rb_empty="@drawable/empty"
+        app:rb_fill="@drawable/fill"
+        app:rb_space="4dp"
+        app:rb_click_rating="true"
+        app:rb_touch_rating="true"
+        />
+
 
     <TextView
         android:text="TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/rateText2"
+        android:layout_below="@+id/ratingBar"
+        android:layout_marginTop="24dp"
         tools:text="Wi-Fi"
-        android:textSize="24sp"
+        android:textSize="28sp"
         android:textColor="@color/fontColor"
-        android:layout_alignEnd="@+id/textView13"
-        android:layout_alignTop="@+id/ratingBar"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:text="TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/rateText"
-        tools:text="Cleaness"
-        android:textSize="24sp"
-        android:textColor="@color/fontColor"
-        android:layout_marginTop="12dp"
-        android:layout_alignTop="@+id/ratingBar1"
-        android:layout_alignParentStart="true" />
-
-    <com.whinc.widget.ratingbar.RatingBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ratingBar3"
-        android:layout_below="@+id/ratingBar2"
-        android:layout_alignParentEnd="true"
-        app:rb_max_count="5"
-        app:rb_count="3"
-        app:rb_empty="@drawable/empty"
-        app:rb_fill="@drawable/fill"
-        app:rb_space="10dp"
-        app:rb_click_rating="true"
-        app:rb_touch_rating="true"
         />
 
     <com.whinc.widget.ratingbar.RatingBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ratingBar2"
-        android:layout_below="@+id/ratingBar"
-        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/rateText2"
+        android:layout_centerHorizontal="true"
         app:rb_max_count="5"
         app:rb_count="3"
         app:rb_empty="@drawable/empty"
         app:rb_fill="@drawable/fill"
-        app:rb_space="10dp"
+        app:rb_space="4dp"
         app:rb_click_rating="true"
         app:rb_touch_rating="true"/>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:id="@+id/comment"
-        android:layout_marginTop="71dp"
-        android:text="Comment"
-        tools:text="Put your comment here"
-        android:textSize="24sp"
-        android:layout_below="@+id/ratingBar3"
-        android:layout_centerHorizontal="true"
-        />
+
+
+
 
     <TextView
         android:text="TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/rateText4"
-        tools:text="Space"
-        android:textColor="@color/fontColor"
-        android:textSize="24sp"
+        android:id="@+id/rateText3"
+        android:layout_marginTop="24dp"
         android:layout_below="@+id/ratingBar2"
-        android:layout_alignParentStart="true" />
+        tools:text="Busy"
+        android:textSize="28sp"
+        android:textColor="@color/fontColor" />
+
+    <com.whinc.widget.ratingbar.RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingBar3"
+        android:layout_below="@+id/rateText3"
+        android:layout_centerHorizontal="true"
+        app:rb_max_count="5"
+        app:rb_count="3"
+        app:rb_empty="@drawable/empty"
+        app:rb_fill="@drawable/fill"
+        app:rb_space="4dp"
+        app:rb_click_rating="true"
+        app:rb_touch_rating="true"
+        />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:id="@+id/comment"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/ratingBar3"
+        android:layout_marginTop="36dp"
+        android:text="Comment"
+        tools:text="Put your comment here"
+        android:textSize="24sp"
+        android:ems="10"
+        />
 
     <Button
         android:text="Save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
         android:id="@+id/rateSave"
         tools:text="SAVE"
         android:textSize="24sp"
         style="@style/Widget.AppCompat.Button.Colored"
         android:textColor="@color/fontColor"
-        android:layout_below="@+id/comment"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
-
-    <com.whinc.widget.ratingbar.RatingBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ratingBar1"
-        android:layout_marginTop="48dp"
-        app:rb_max_count="5"
-        app:rb_count="3"
-        app:rb_empty="@drawable/empty"
-        app:rb_fill="@drawable/fill"
-        app:rb_space="10dp"
-        app:rb_click_rating="true"
-        app:rb_touch_rating="true"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/rateText"
-        android:layout_marginStart="23dp" />
-
-    <com.whinc.widget.ratingbar.RatingBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ratingBar"
-        app:rb_max_count="5"
-        app:rb_count="3"
-        app:rb_empty="@drawable/empty"
-        app:rb_fill="@drawable/fill"
-        app:rb_space="10dp"
-        app:rb_click_rating="true"
-        app:rb_touch_rating="true"
-        android:layout_below="@+id/ratingBar1"
-        android:layout_alignStart="@+id/ratingBar1" />
 
 </RelativeLayout>

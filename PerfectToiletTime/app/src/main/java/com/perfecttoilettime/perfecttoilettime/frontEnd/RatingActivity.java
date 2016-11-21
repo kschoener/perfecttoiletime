@@ -7,24 +7,33 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import com.whinc.widget.ratingbar.RatingBar;
 
 import com.perfecttoilettime.perfecttoilettime.R;
 
-import java.util.ArrayList;
-
 public class RatingActivity extends AppCompatActivity {
 
-//    private ArrayList<RatingBar> ratingBar;
-//    private ArrayList<TextView> rateText;
     public static final String ratingExtraKey = "rates";
     private int gender = genderActivity.maleValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(genderActivity.genderExtraKey)){
+            gender = getIntent().getExtras().getInt(genderActivity.genderExtraKey);
+            switch (gender){
+                case genderActivity.maleValue:
+                    (findViewById(R.id.activity_preferences)).setBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.maleBackgroundColor, null));
+                    break;
+                case genderActivity.femaleValue:
+                    (findViewById(R.id.activity_preferences)).setBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.femaleBackgroundColor, null));
+                    break;
+            }
+        }
+
         final com.whinc.widget.ratingbar.RatingBar ratingBar = (com.whinc.widget.ratingbar.RatingBar) findViewById(R.id.ratingBar);
 
         ratingBar.setOnRatingChangeListener(new RatingBar.OnRatingChangeListener() {
@@ -46,8 +55,7 @@ public class RatingActivity extends AppCompatActivity {
             }
         });
 //        int[] prevRate = null;
-        Intent startIntent = getIntent();
-//
+
 //        if(startIntent.getExtras().containsKey(ratingExtraKey)){
 //            prevRate = startIntent.getExtras().getIntArray(ratingExtraKey);
 //        }
@@ -91,19 +99,6 @@ public class RatingActivity extends AppCompatActivity {
                 startActivity(startMap);
             }
         });
-        if(startIntent.getExtras().containsKey(genderActivity.genderExtraKey)){
-            gender = startIntent.getExtras().getInt(genderActivity.genderExtraKey);
-            switch (gender){
-                case genderActivity.maleValue:
-                    (findViewById(R.id.activity_preferences)).setBackgroundColor(
-                            ResourcesCompat.getColor(getResources(), R.color.maleBackgroundColor, null));
-                    break;
-                case genderActivity.femaleValue:
-                    (findViewById(R.id.activity_preferences)).setBackgroundColor(
-                            ResourcesCompat.getColor(getResources(), R.color.femaleBackgroundColor, null));
-                    break;
-            }
-        }
     }
 
 //    private RatingBar.OnRatingBarChangeListener MyRateListener = new RatingBar.OnRatingBarChangeListener(){

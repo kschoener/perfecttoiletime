@@ -17,11 +17,25 @@ import java.util.List;
 public class FavoritesList extends AppCompatActivity {
 
     FavoritesDBHandler handler;
-
+    private int gender = genderActivity.maleValue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites_list);
+
+        if(getIntent().getExtras() != null && getIntent().getExtras().containsKey(genderActivity.genderExtraKey)){
+            gender = getIntent().getExtras().getInt(genderActivity.genderExtraKey);
+            switch (gender){
+                case genderActivity.maleValue:
+                    findViewById(R.id.activity_favorites_list).setBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.maleBackgroundColor, null));
+                    break;
+                case genderActivity.femaleValue:
+                    findViewById(R.id.activity_favorites_list).setBackgroundColor(
+                            ResourcesCompat.getColor(getResources(), R.color.femaleBackgroundColor, null));
+                    break;
+            }
+        }
 
         handler = new FavoritesDBHandler(this, null, null, 1);
         List<String> bathrooms = handler.getAllBathrooms();
