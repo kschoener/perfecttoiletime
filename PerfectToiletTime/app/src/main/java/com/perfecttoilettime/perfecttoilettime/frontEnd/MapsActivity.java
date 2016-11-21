@@ -83,6 +83,7 @@ public class MapsActivity extends FragmentActivity implements
     private View infoWindowView;
     private BitmapDescriptor genderColor;
     private boolean gettingBathrooms = false;
+    private Double closestLatitudeReturn, closestLongitudeReturn;
 
     private int searchDistanceMiles = 100000;
     private LatLngBounds bathroomListContains;
