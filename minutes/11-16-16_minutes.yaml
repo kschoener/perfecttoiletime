@@ -1,0 +1,25 @@
+
+Date: November 16, 2016
+meeting_type: ta
+attendance: [kylescho, markabid, erselig, swilser, cwang39]
+absent: []
+excused_absences: [
+  {}
+  ]
+task_progress: [
+  {ubit: markabid, progress: Finished.},
+  {ubit: erselig, progress: Finished.},
+  {ubit: kylescho, progress: Partially finished, still needs to conenct front/backend.},
+  {ubit: cwang39, progress: Finished},
+  {ubit: swilser, progress: Finished.}
+  ]
+issues: [
+  ]
+Notes:  |
+  Began branch merging
+  Goals for sprint 4:
+    Mark: add facebook sharing
+    Juno: front-end adding bathroom ratings/comments page
+    Ted: back-end adding bathroom functionality
+    Steven: Work on algorithms (improve/fix)
+    Kyle: Debugging, working on connecting adding bathroom ratings/comments back-end+front-end
