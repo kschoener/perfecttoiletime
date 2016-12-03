@@ -38,12 +38,19 @@ The goal for this app is firstly to bring a better experience for the everyday m
 
 # Backend Documentation
 MySQL was used for the database.
-"GetAllLocations.php" returns all the data in the "Users1" table
+
+"GetAllLocations.php" returns all the data in the "Users1" table.
+
 "getLocation.php" uses the longitude, latitude, and distance input passed in through GET requests and returns all bathrooms within the radius of the distance from the coordinates.
+
 "getRatings.php" returns all of the ratings for the bathroom id input and also outputs the average ratings of that bathroom.
+
 "insertBathroom.php" has inputs for longitude, latitude, name, description, and floor of a bathroom.  It inserts this data into the "Users1" table.  If a bathroom is within 30 feet of another bathroom it will not insert the bathroom to avoid duplicates.
+
 "insertRatingsAndComments" has inputs for id, busy, clean, wifi, and comments and inserts this data into the "Ratings" table.
+
 "isUserEntered" takes an id as input and outputs the data for the user with that ID.  If that user is not in the database it returns false.
+
 Description of "Ratings" table
 +-------------+--------------+------+-----+---------+----------------+
 | Field       | Type         | Null | Key | Default | Extra          |
