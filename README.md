@@ -51,36 +51,36 @@ MySQL was used for the database.
 
 "isUserEntered" takes an id as input and outputs the data for the user with that ID.  If that user is not in the database it returns false.
 
-Description of "Ratings" table
-+-------------+--------------+------+-----+---------+----------------+
-| Field       | Type         | Null | Key | Default | Extra          |
-+-------------+--------------+------+-----+---------+----------------+
-| id          | int(11)      | NO   | PRI | NULL    | auto_increment |
-| Wifi        | varchar(255) | YES  |     | NULL    |                |
-| Busy        | varchar(255) | YES  |     | NULL    |                |
-| Cleanliness | varchar(255) | YES  |     | NULL    |                |
-| Comment     | varchar(255) | YES  |     | NULL    |                |
-| Bathroom_id | int(11)      | YES  |     | NULL    |                |
-+-------------+--------------+------+-----+---------+----------------+
-
-Description of "UserData" table
-+-------------+--------------+------+-----+---------+-------+
-| Field       | Type         | Null | Key | Default | Extra |
-+-------------+--------------+------+-----+---------+-------+
-| id          | varchar(255) | NO   | PRI | NULL    |       |
-| Wifi        | varchar(255) | YES  |     | NULL    |       |
-| Busy        | varchar(255) | YES  |     | NULL    |       |
-| Cleanliness | varchar(255) | YES  |     | NULL    |       |
-+-------------+--------------+------+-----+---------+-------+
-
-Description of "Users1" table
-+-------------+--------------+------+-----+---------+----------------+
-| Field       | Type         | Null | Key | Default | Extra          |
-+-------------+--------------+------+-----+---------+----------------+
-| id          | int(11)      | NO   | PRI | NULL    | auto_increment |
-| Longitude   | double       | YES  |     | NULL    |                |
-| Latitude    | double       | YES  |     | NULL    |                |
-| name        | varchar(255) | YES  |     | NULL    |                |
-| description | varchar(255) | YES  |     | NULL    |                |
-| floor       | int(11)      | YES  |     | NULL    |                |
-+-------------+--------------+------+-----+---------+----------------+
+Description of "Ratings" table  
++-------------+--------------+------+-----+---------+----------------+  
+| Field       | Type         | Null | Key | Default | Extra          |  
++-------------+--------------+------+-----+---------+----------------+  
+| id          | int(11)      | NO   | PRI | NULL    | auto_increment |  
+| Wifi        | varchar(255) | YES  |     | NULL    |                |  
+| Busy        | varchar(255) | YES  |     | NULL    |                |  
+| Cleanliness | varchar(255) | YES  |     | NULL    |                |  
+| Comment     | varchar(255) | YES  |     | NULL    |                |  
+| Bathroom_id | int(11)      | YES  |     | NULL    |                |  
++-------------+--------------+------+-----+---------+----------------+  
+  
+Description of "UserData" table  
++-------------+--------------+------+-----+---------+-------+  
+| Field       | Type         | Null | Key | Default | Extra |  
++-------------+--------------+------+-----+---------+-------+  
+| id          | varchar(255) | NO   | PRI | NULL    |       |  
+| Wifi        | varchar(255) | YES  |     | NULL    |       |  
+| Busy        | varchar(255) | YES  |     | NULL    |       |  
+| Cleanliness | varchar(255) | YES  |     | NULL    |       |  
++-------------+--------------+------+-----+---------+-------+  
+  
+Description of "Users1" table  
++-------------+--------------+------+-----+---------+----------------+  
+| Field       | Type         | Null | Key | Default | Extra          |  
++-------------+--------------+------+-----+---------+----------------+  
+| id          | int(11)      | NO   | PRI | NULL    | auto_increment |  
+| Longitude   | double       | YES  |     | NULL    |                |  
+| Latitude    | double       | YES  |     | NULL    |                |  
+| name        | varchar(255) | YES  |     | NULL    |                |  
+| description | varchar(255) | YES  |     | NULL    |                |  
+| floor       | int(11)      | YES  |     | NULL    |                |  
++-------------+--------------+------+-----+---------+----------------+  
