@@ -47,9 +47,9 @@ MySQL was used for the database.
 
 "insertBathroom.php" has inputs for longitude, latitude, name, description, and floor of a bathroom.  It inserts this data into the "Users1" table.  If a bathroom is within 30 feet of another bathroom it will not insert the bathroom to avoid duplicates.
 
-"insertRatingsAndComments" has inputs for id, busy, clean, wifi, and comments and inserts this data into the "Ratings" table.
+"insertRatingsAndComments.php" has inputs for id, busy, clean, wifi, and comments and inserts this data into the "Ratings" table.
 
-"isUserEntered" takes an id as input and outputs the data for the user with that ID.  If that user is not in the database it returns false.
+"isUserEntered.php" takes an id as input and outputs the data for the user with that ID.  If that user is not in the database it returns false.
 
 Description of "Ratings" table  
 +-------------+--------------+------+-----+---------+----------------+  
