@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.RelativeLayout;
 import com.perfecttoilettime.perfecttoilettime.R;
 
 import java.util.ArrayList;

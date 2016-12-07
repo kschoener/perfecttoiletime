@@ -1,8 +1,11 @@
 package com.perfecttoilettime.perfecttoilettime.frontEnd;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ProgressBar;
@@ -29,6 +32,7 @@ public class LoadingScreen extends AppCompatActivity {
     private Handler mHandler;
 
     private String androidID = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

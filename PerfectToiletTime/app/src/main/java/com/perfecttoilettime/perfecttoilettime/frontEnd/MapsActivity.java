@@ -20,15 +20,23 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.*;
-import com.google.android.gms.maps.model.*;
-import com.google.android.gms.maps.GoogleMap.*;
-
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.perfecttoilettime.perfecttoilettime.R;
 
 import org.json.JSONArray;
@@ -52,21 +60,23 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import java.lang.*;
+import java.lang.String;
+
+import static java.lang.Thread.sleep;
 
 //created by Kyle
 public class MapsActivity extends FragmentActivity implements
-        OnMapReadyCallback, OnMapLongClickListener,
-        OnCameraMoveStartedListener, OnCameraMoveListener, OnCameraMoveCanceledListener,
-        OnInfoWindowLongClickListener, OnInfoWindowClickListener,
-        InfoWindowAdapter{
+        OnMapReadyCallback, GoogleMap.OnMapLongClickListener,
+        GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnCameraMoveListener, GoogleMap.OnCameraMoveCanceledListener,
+        GoogleMap.OnInfoWindowLongClickListener, GoogleMap.OnInfoWindowClickListener,
+        GoogleMap.InfoWindowAdapter {
 
     private GoogleMap mMap;
     private LatLng mLocation;
     private LocationManager mLocationManager;
     private final long LOCATION_REFRESH_TIME = 30000; //5 seconds -> 5000
     private final float LOCATION_REFRESH_DISTANCE = 20; //5 meters -> 5
-    private final int LOCATION_REQUEST_CODE = 8;
+    public static final int LOCATION_REQUEST_CODE = 8;
     private final float zoomlevel = 16.0f;
 
     private boolean madeBathrooms = false;
@@ -118,6 +128,29 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_REQUEST_CODE);
+        }
+        long startTime = System.currentTimeMillis();
+        while((ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)){
+            Toast.makeText(this, "PerfectToiletTime needs Location Permissions!", Toast.LENGTH_LONG);
+            try {
+                sleep(2 * 1000);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            try {
+                wait(2 * 1000);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            if(System.currentTimeMillis()-startTime > 60*1000){
+                finish();
+            }
+        }
         //allows us to use the color makers
         MapsInitializer.initialize(getApplicationContext());
 
@@ -129,13 +162,6 @@ public class MapsActivity extends FragmentActivity implements
 
         if(startIntent.getExtras() != null && startIntent.getExtras().containsKey(preferencesActivity.preferenceExtraKey)) {
             prefValues = startIntent.getExtras().getIntArray(preferencesActivity.preferenceExtraKey);
-        }
-
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_REQUEST_CODE);
         }
 
         setContentView(R.layout.activity_maps);
@@ -587,7 +613,7 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onCameraMoveStarted(int reason) {
-        if (reason == OnCameraMoveStartedListener.REASON_GESTURE) {
+        if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
             Log.d("cameraMove", "update bathrooms because camera move started");
             updateBounds();
 //            Toast.makeText(this, "The user gestured on the map.", Toast.LENGTH_SHORT).show();
@@ -710,6 +736,7 @@ public class MapsActivity extends FragmentActivity implements
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
+                    Toast.makeText(this, "PerfectToiletTime needs Location Permissions!", Toast.LENGTH_LONG);
                     Log.e("PerfectToiletTime", "Not granted location permissions");
                     finish();
                     System.exit(1);
