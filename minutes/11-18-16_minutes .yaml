@@ -1,0 +1,28 @@
+
+Date: November 18, 2016
+meeting_type: group
+attendance: [kylescho, markabid, erselig, swilser, cwang39]
+absent: []
+excused_absences: [
+  {}
+  ]
+task_progress: [
+  {ubit: markabid, progress: Finished.},
+  {ubit: erselig, progress: Finished.},
+  {ubit: kylescho, progress: Finished.},
+  {ubit: cwang39, progress: Finished},
+  {ubit: swilser, progress: Finished.}
+  ]
+issues: [
+  ]
+Notes:  |
+  Continued merging branches, discovered more bugs and issues with code.
+  Fixed those problems and got the app working for the most part.
+  Few more things need to be done before sprint is complete.
+
+  Goals for sprint 4:
+    Mark: add facebook sharing
+    Juno: front-end adding bathroom ratings/comments page
+    Ted: back-end adding bathroom functionality
+    Steven: Work on algorithms (improve/fix)
+    Kyle: Debugging, working on connecting adding bathroom ratings/comments back-end+front-end
